@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ public class UserExtended extends User {
 	private boolean flag;
 
 	public Date getDateOfBirth() {
-		return dateOfBirth;
+		return this.dateOfBirth;
 	}
 
 	public void setDateOfBirth(Date dateOfBirth) {
@@ -32,7 +32,7 @@ public class UserExtended extends User {
 	}
 
 	public boolean isFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public void setFlag(boolean flag) {

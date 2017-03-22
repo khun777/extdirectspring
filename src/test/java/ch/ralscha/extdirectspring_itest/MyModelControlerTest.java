@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,14 +37,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.ralscha.extdirectspring.bean.api.Action;
 import ch.ralscha.extdirectspring.bean.api.RemotingApi;
 import ch.ralscha.extdirectspring.controller.ApiControllerTest;
 import ch.ralscha.extdirectspring.controller.ApiRequestParams;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MyModelControlerTest extends JettyTest {
 
@@ -54,22 +54,22 @@ public class MyModelControlerTest extends JettyTest {
 
 	@Before
 	public void beforeTest() {
-		client = HttpClientBuilder.create().build();
-		post = new HttpPost("http://localhost:9998/controller/router");
+		this.client = HttpClientBuilder.create().build();
+		this.post = new HttpPost("http://localhost:9998/controller/router");
 	}
 
 	@After
 	public void afterTest() {
-		IOUtils.closeQuietly(client);
+		IOUtils.closeQuietly(this.client);
 	}
 
 	private static RemotingApi api() {
 		RemotingApi remotingApi = new RemotingApi("remoting", "/controller/router", null);
-		remotingApi
-				.addAction("myModelController", new Action("method1", 0, Boolean.TRUE));
-		remotingApi
-				.addAction("myModelController", new Action("method2", 0, Boolean.TRUE));
-		remotingApi.addAction("myModelController", new Action("update", 0, Boolean.TRUE));
+		remotingApi.addAction("myModelController",
+				Action.createFormHandler("method1", 0));
+		remotingApi.addAction("myModelController",
+				Action.createFormHandler("method2", 0));
+		remotingApi.addAction("myModelController", Action.createFormHandler("update", 0));
 		return remotingApi;
 	}
 
@@ -77,7 +77,7 @@ public class MyModelControlerTest extends JettyTest {
 	public void testApi() throws IOException {
 		HttpGet g = new HttpGet(
 				"http://localhost:9998/controller/api.js?group=itest_base");
-		CloseableHttpResponse response = client.execute(g);
+		CloseableHttpResponse response = this.client.execute(g);
 		try {
 			String responseString = EntityUtils.toString(response.getEntity());
 			String contentType = response.getFirstHeader("Content-Type").getValue();
@@ -94,7 +94,7 @@ public class MyModelControlerTest extends JettyTest {
 	public void testApiDebug() throws IOException {
 		HttpGet g = new HttpGet(
 				"http://localhost:9998/controller/api-debug.js?group=itest_base");
-		CloseableHttpResponse response = client.execute(g);
+		CloseableHttpResponse response = this.client.execute(g);
 		try {
 			String responseString = EntityUtils.toString(response.getEntity());
 			String contentType = response.getFirstHeader("Content-Type").getValue();
@@ -111,7 +111,7 @@ public class MyModelControlerTest extends JettyTest {
 	public void testApiFingerprinted() throws IOException {
 		HttpGet g = new HttpGet(
 				"http://localhost:9998/controller/api-1.1.1.js?group=itest_base");
-		CloseableHttpResponse response = client.execute(g);
+		CloseableHttpResponse response = this.client.execute(g);
 		try {
 			String responseString = EntityUtils.toString(response.getEntity());
 			String contentType = response.getFirstHeader("Content-Type").getValue();
@@ -131,8 +131,8 @@ public class MyModelControlerTest extends JettyTest {
 		callMethod("method2");
 	}
 
-	private void callMethod(String method) throws IOException, JsonParseException,
-			JsonMappingException {
+	private void callMethod(String method)
+			throws IOException, JsonParseException, JsonMappingException {
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 		formparams.add(new BasicNameValuePair("extTID", "3"));
 		formparams.add(new BasicNameValuePair("extAction", "myModelController"));
@@ -142,9 +142,9 @@ public class MyModelControlerTest extends JettyTest {
 		formparams.add(new BasicNameValuePair("name", "Jim"));
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(formparams, "UTF-8");
 
-		post.setEntity(postEntity);
+		this.post.setEntity(postEntity);
 
-		CloseableHttpResponse response = client.execute(post);
+		CloseableHttpResponse response = this.client.execute(this.post);
 		try {
 			HttpEntity entity = response.getEntity();
 			assertThat(entity).isNotNull();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class LoginController {
 	@RequestMapping("/login")
 	@ResponseBody
 	public void login() {
-		UserDetails ud = userManager.loadUserByUsername("jimi");
+		UserDetails ud = this.userManager.loadUserByUsername("jimi");
 		if (ud != null) {
 			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 					ud, null, ud.getAuthorities());

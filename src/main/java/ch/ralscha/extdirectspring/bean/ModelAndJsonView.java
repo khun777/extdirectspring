@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import ch.ralscha.extdirectspring.annotation.ExtDirectMethodType;
 /**
  * A {@link ExtDirectMethod} can return an instance of this class to specify a JsonView
  * that Jackson uses to serialize the response. Not supported for
- * {@link ExtDirectMethodType#FORM_POST} and {@link ExtDirectMethodType#SSE}.
+ * {@link ExtDirectMethodType#FORM_POST}.
  * <p>
  * If the property jsonView is set it overrides a jsonView specified on
  * {@link ExtDirectMethod#jsonView()}.
@@ -43,7 +43,7 @@ public class ModelAndJsonView extends JsonViewHint {
 	}
 
 	public Object getModel() {
-		return model;
+		return this.model;
 	}
 
 	public void setModel(Object model) {

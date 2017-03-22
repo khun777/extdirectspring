@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,26 +38,26 @@ public class BookSubServiceTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
 	public void testCreate() throws Exception {
-		new CrudTestMethods("bookSubService").testCreate(mockMvc);
+		new CrudTestMethods("bookSubService").testCreate(this.mockMvc);
 	}
 
 	@Test
 	public void testRead() throws Exception {
-		new CrudTestMethods("bookSubService").testRead(mockMvc);
+		new CrudTestMethods("bookSubService").testRead(this.mockMvc);
 	}
 
 	@Test
 	public void testUpdate() throws Exception {
-		new CrudTestMethods("bookSubService").testUpdate(mockMvc);
+		new CrudTestMethods("bookSubService").testUpdate(this.mockMvc);
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-		new CrudTestMethods("bookSubService").testDelete(mockMvc);
+		new CrudTestMethods("bookSubService").testDelete(this.mockMvc);
 	}
 }

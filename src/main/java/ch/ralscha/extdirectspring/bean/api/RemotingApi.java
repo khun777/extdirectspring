@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
 package ch.ralscha.extdirectspring.bean.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.util.StringUtils;
 
@@ -37,7 +40,7 @@ public final class RemotingApi {
 
 	private final String type;
 
-	private final Map<String, List<Action>> actions;
+	private Map<String, List<Action>> actions;
 
 	private Integer timeout;
 
@@ -45,16 +48,15 @@ public final class RemotingApi {
 
 	private Object enableBuffer;
 
-	private final List<PollingProvider> pollingProviders;
+	private Integer bufferLimit;
 
-	private final Map<String, List<String>> sseProviders;
+	private final List<PollingProvider> pollingProviders;
 
 	public RemotingApi(String type, String url, String namespace) {
 		this.type = type;
 		this.descriptor = null;
 		this.actions = new HashMap<String, List<Action>>();
 		this.pollingProviders = new ArrayList<PollingProvider>();
-		this.sseProviders = new HashMap<String, List<String>>();
 
 		this.url = url;
 
@@ -66,24 +68,48 @@ public final class RemotingApi {
 		}
 	}
 
+	public void sort() {
+		this.actions = new TreeMap<String, List<Action>>(this.actions);
+
+		for (List<Action> action : this.actions.values()) {
+			Collections.sort(action, new Comparator<Action>() {
+				@Override
+				public int compare(Action o1, Action o2) {
+					return o1.getName().compareTo(o2.getName());
+				}
+			});
+		}
+
+		Collections.sort(this.pollingProviders, new Comparator<PollingProvider>() {
+			@Override
+			public int compare(PollingProvider o1, PollingProvider o2) {
+				int c = o1.getBeanName().compareTo(o2.getBeanName());
+				if (c == 0) {
+					return o1.getMethod().compareTo(o2.getMethod());
+				}
+				return c;
+			}
+		});
+	}
+
 	public Map<String, List<Action>> getActions() {
-		return actions;
+		return this.actions;
 	}
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 	public String getUrl() {
-		return url;
+		return this.url;
 	}
 
 	public String getNamespace() {
-		return namespace;
+		return this.namespace;
 	}
 
 	public String getDescriptor() {
-		return descriptor;
+		return this.descriptor;
 	}
 
 	public void setDescriptor(String descriptor) {
@@ -91,7 +117,7 @@ public final class RemotingApi {
 	}
 
 	public Integer getTimeout() {
-		return timeout;
+		return this.timeout;
 	}
 
 	public void setTimeout(Integer timeout) {
@@ -99,7 +125,7 @@ public final class RemotingApi {
 	}
 
 	public Integer getMaxRetries() {
-		return maxRetries;
+		return this.maxRetries;
 	}
 
 	public void setMaxRetries(Integer maxRetries) {
@@ -107,42 +133,37 @@ public final class RemotingApi {
 	}
 
 	public Object getEnableBuffer() {
-		return enableBuffer;
+		return this.enableBuffer;
 	}
 
 	public void setEnableBuffer(Object enableBuffer) {
 		this.enableBuffer = enableBuffer;
 	}
 
-	@JsonIgnore
-	public List<PollingProvider> getPollingProviders() {
-		return pollingProviders;
+	public Integer getBufferLimit() {
+		return this.bufferLimit;
+	}
+
+	public void setBufferLimit(Integer bufferLimit) {
+		this.bufferLimit = bufferLimit;
 	}
 
 	@JsonIgnore
-	public Map<String, List<String>> getSseProviders() {
-		return sseProviders;
+	public List<PollingProvider> getPollingProviders() {
+		return this.pollingProviders;
 	}
 
 	public void addAction(String beanName, Action action) {
-		List<Action> beanActions = actions.get(beanName);
+		List<Action> beanActions = this.actions.get(beanName);
 		if (beanActions == null) {
 			beanActions = new ArrayList<Action>();
-			actions.put(beanName, beanActions);
+			this.actions.put(beanName, beanActions);
 		}
 		beanActions.add(action);
 	}
 
 	public void addPollingProvider(PollingProvider pollingProvider) {
-		pollingProviders.add(pollingProvider);
+		this.pollingProviders.add(pollingProvider);
 	}
 
-	public void addSseProvider(String beanName, String method) {
-		List<String> methods = sseProviders.get(beanName);
-		if (methods == null) {
-			methods = new ArrayList<String>();
-			sseProviders.put(beanName, methods);
-		}
-		methods.add(method);
-	}
 }

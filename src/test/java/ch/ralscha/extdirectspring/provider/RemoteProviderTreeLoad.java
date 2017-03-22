@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,9 +61,9 @@ public class RemoteProviderTreeLoad {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + (id == null ? 0 : id.hashCode());
-			result = prime * result + (leaf ? 1231 : 1237);
-			result = prime * result + (text == null ? 0 : text.hashCode());
+			result = prime * result + (this.id == null ? 0 : this.id.hashCode());
+			result = prime * result + (this.leaf ? 1231 : 1237);
+			result = prime * result + (this.text == null ? 0 : this.text.hashCode());
 			return result;
 		}
 
@@ -79,23 +79,23 @@ public class RemoteProviderTreeLoad {
 				return false;
 			}
 			Node other = (Node) obj;
-			if (id == null) {
+			if (this.id == null) {
 				if (other.id != null) {
 					return false;
 				}
 			}
-			else if (!id.equals(other.id)) {
+			else if (!this.id.equals(other.id)) {
 				return false;
 			}
-			if (leaf != other.leaf) {
+			if (this.leaf != other.leaf) {
 				return false;
 			}
-			if (text == null) {
+			if (this.text == null) {
 				if (other.text != null) {
 					return false;
 				}
 			}
-			else if (!text.equals(other.text)) {
+			else if (!this.text.equals(other.text)) {
 				return false;
 			}
 			return true;
@@ -110,8 +110,8 @@ public class RemoteProviderTreeLoad {
 	}
 
 	@ExtDirectMethod(value = ExtDirectMethodType.TREE_LOAD, entryClass = String.class)
-	public List<Node> method2(@RequestParam("node") String node, @RequestParam(
-			defaultValue = "defaultValue") String foo,
+	public List<Node> method2(@RequestParam("node") String node,
+			@RequestParam(defaultValue = "defaultValue") String foo,
 			@DateTimeFormat(iso = ISO.DATE) LocalDate today) {
 		return createTreeList(node, ":" + foo + ";" + today.toString());
 	}
@@ -123,9 +123,8 @@ public class RemoteProviderTreeLoad {
 			@CookieValue String theCookie, final HttpSession session, Locale locale,
 			Principal principal) {
 
-		return createTreeList(node, ":" + foo + ";" + theCookie + ";"
-				+ (response != null) + ";" + (request != null) + ";" + (session != null)
-				+ ";" + locale);
+		return createTreeList(node, ":" + foo + ";" + theCookie + ";" + (response != null)
+				+ ";" + (request != null) + ";" + (session != null) + ";" + locale);
 	}
 
 	@ExtDirectMethod(ExtDirectMethodType.TREE_LOAD)
@@ -133,26 +132,34 @@ public class RemoteProviderTreeLoad {
 			HttpServletResponse response, @RequestHeader Boolean aHeader,
 			HttpServletRequest request) {
 
-		return createTreeList(node, ":" + aHeader + ";" + (response != null) + ";"
-				+ (request != null));
+		return createTreeList(node,
+				":" + aHeader + ";" + (response != null) + ";" + (request != null));
 	}
 
 	@ExtDirectMethod(ExtDirectMethodType.TREE_LOAD)
-	public Node[] method5(@RequestParam("node") String node,
-			HttpServletResponse response, @RequestHeader Boolean aHeader,
-			HttpServletRequest request) {
+	public Node[] method5(@RequestParam("node") String node, HttpServletResponse response,
+			@RequestHeader Boolean aHeader, HttpServletRequest request) {
 
-		List<Node> result = createTreeList(node, ":" + aHeader + ";" + (response != null)
-				+ ";" + (request != null));
+		List<Node> result = createTreeList(node,
+				":" + aHeader + ";" + (response != null) + ";" + (request != null));
 		return result.toArray(new Node[result.size()]);
 	}
 
-	@ExtDirectMethod(ExtDirectMethodType.TREE_LOAD)
+	@ExtDirectMethod(value = ExtDirectMethodType.TREE_LOAD, batched = true)
 	public Node method6(@RequestParam("node") String node, HttpServletResponse response,
 			final HttpServletRequest request) {
 
-		List<Node> result = createTreeList(node, ";" + (response != null) + ";"
-				+ (request != null));
+		List<Node> result = createTreeList(node,
+				";" + (response != null) + ";" + (request != null));
+		return result.get(0);
+	}
+
+	@ExtDirectMethod(value = ExtDirectMethodType.TREE_LOAD, batched = false)
+	public Node method7(@RequestParam("node") String node, HttpServletResponse response,
+			final HttpServletRequest request) {
+
+		List<Node> result = createTreeList(node,
+				";" + (response != null) + ";" + (request != null));
 		return result.get(0);
 	}
 
@@ -160,7 +167,7 @@ public class RemoteProviderTreeLoad {
 		return createTreeList(id, "");
 	}
 
-	private static List<Node> createTreeList(String id, String appendix) {
+	public static List<Node> createTreeList(String id, String appendix) {
 		List<Node> result = new ArrayList<Node>();
 		if (id.equals("root")) {
 			for (int i = 1; i <= 5; ++i) {

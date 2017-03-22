@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,6 @@ public class Configuration {
 
 	private String pollingUrlsVar = "POLLING_URLS";
 
-	private String sseVar = "SSE";
-
 	private boolean fullRouterUrl = false;
 
 	private String baseRouterUrl = null;
@@ -66,6 +64,8 @@ public class Configuration {
 	private Integer maxRetries = null;
 
 	private Object enableBuffer = null;
+
+	private Integer bufferLimit = null;
 
 	private boolean streamResponse = false;
 
@@ -86,7 +86,7 @@ public class Configuration {
 	private ConversionService conversionService;
 
 	public String getDefaultExceptionMessage() {
-		return defaultExceptionMessage;
+		return this.defaultExceptionMessage;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class Configuration {
 	}
 
 	public boolean isSendExceptionMessage() {
-		return sendExceptionMessage;
+		return this.sendExceptionMessage;
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class Configuration {
 	}
 
 	public boolean isSendStacktrace() {
-		return sendStacktrace;
+		return this.sendStacktrace;
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class Configuration {
 	}
 
 	public Map<Class<?>, String> getExceptionToMessage() {
-		return exceptionToMessage;
+		return this.exceptionToMessage;
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class Configuration {
 	}
 
 	public boolean isAlwaysWrapStoreResponse() {
-		return alwaysWrapStoreResponse;
+		return this.alwaysWrapStoreResponse;
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class Configuration {
 	}
 
 	public boolean isSynchronizeOnSession() {
-		return synchronizeOnSession;
+		return this.synchronizeOnSession;
 	}
 
 	/**
@@ -210,15 +210,15 @@ public class Configuration {
 	}
 
 	public Integer getTimeout() {
-		return timeout;
+		return this.timeout;
 	}
 
 	/**
 	 * Sets the timeout in milliseconds for remote calls. This parameter is part of the
 	 * configuration object api.js sends to the client and configures the timeout property
 	 * of the <a href=
-	 * "http://docs.sencha.com/ext-js/4-2/#!/api/Ext.direct.RemotingProvider"
-	 * >RemotingProvider</a>.
+	 * "http://docs.sencha.com/extjs/6.0/6.0.0-classic/#!/api/Ext.direct.RemotingProvider"
+	 * > RemotingProvider</a>.
 	 *
 	 * @param timeout new timeout value
 	 */
@@ -227,15 +227,16 @@ public class Configuration {
 	}
 
 	public Integer getMaxRetries() {
-		return maxRetries;
+		return this.maxRetries;
 	}
 
 	/**
 	 * Sets the number of times the client will try to send a message to the server before
 	 * throwing a failure. Default value is 1. This parameter is part of the configuration
-	 * object api.js sends to the client and configures the maxRetries property of the <a
-	 * href= "http://docs.sencha.com/ext-js/4-2/#!/api/Ext.direct.RemotingProvider"
-	 * >RemotingProvider</a>.
+	 * object api.js sends to the client and configures the maxRetries property of the
+	 * <a href=
+	 * "http://docs.sencha.com/extjs/6.0/6.0.0-classic/#!/api/Ext.direct.RemotingProvider"
+	 * > RemotingProvider</a>.
 	 *
 	 * @param maxRetries new number of max retries
 	 */
@@ -244,7 +245,7 @@ public class Configuration {
 	}
 
 	public Object getEnableBuffer() {
-		return enableBuffer;
+		return this.enableBuffer;
 	}
 
 	/**
@@ -256,8 +257,8 @@ public class Configuration {
 	 * <p>
 	 * This parameter is part of the configuration object api.js sends to the client and
 	 * configures the enableBuffer property of the <a href=
-	 * "http://docs.sencha.com/ext-js/4-2/#!/api/Ext.direct.RemotingProvider"
-	 * >RemotingProvider</a>.
+	 * "http://docs.sencha.com/extjs/6.0/6.0.0-classic/#!/api/Ext.direct.RemotingProvider"
+	 * > RemotingProvider</a>.
 	 * <p>
 	 * Defaults to: 10
 	 *
@@ -265,6 +266,27 @@ public class Configuration {
 	 */
 	public void setEnableBuffer(Object enableBuffer) {
 		this.enableBuffer = enableBuffer;
+	}
+
+	public Integer getBufferLimit() {
+		return this.bufferLimit;
+	}
+
+	/**
+	 * The maximum number of requests to batch together. By default, an unlimited number
+	 * of requests will be batched. This option will allow to wait only for a certain
+	 * number of Direct method calls before dispatching a request to the server, even if
+	 * {@link #enableBuffer} timeout has not yet expired.
+	 * <p>
+	 * Note that this option does nothing if {@link #enableBuffer} is set to `false`.
+	 * <p>
+	 * Defaults to: Number.MAX_VALUE
+	 *
+	 * @param bufferLimit new value for buffer limit
+	 */
+	@SuppressWarnings("javadoc")
+	public void setBufferLimit(Integer bufferLimit) {
+		this.bufferLimit = bufferLimit;
 	}
 
 	/**
@@ -300,7 +322,7 @@ public class Configuration {
 	}
 
 	public boolean isStreamResponse() {
-		return streamResponse;
+		return this.streamResponse;
 	}
 
 	/**
@@ -339,11 +361,11 @@ public class Configuration {
 	}
 
 	public String getJsContentType() {
-		return jsContentType;
+		return this.jsContentType;
 	}
 
 	public BatchedMethodsExecutionPolicy getBatchedMethodsExecutionPolicy() {
-		return batchedMethodsExecutionPolicy;
+		return this.batchedMethodsExecutionPolicy;
 	}
 
 	/**
@@ -366,7 +388,7 @@ public class Configuration {
 	}
 
 	public ExecutorService getBatchedMethodsExecutorService() {
-		return batchedMethodsExecutorService;
+		return this.batchedMethodsExecutorService;
 	}
 
 	/**
@@ -386,7 +408,7 @@ public class Configuration {
 	}
 
 	public String getProviderType() {
-		return providerType;
+		return this.providerType;
 	}
 
 	/**
@@ -403,7 +425,7 @@ public class Configuration {
 	}
 
 	public String getFrameDomain() {
-		return frameDomain;
+		return this.frameDomain;
 	}
 
 	/**
@@ -418,7 +440,7 @@ public class Configuration {
 	}
 
 	public String getFrameDomainScript() {
-		return frameDomainScript;
+		return this.frameDomainScript;
 	}
 
 	/**
@@ -433,7 +455,7 @@ public class Configuration {
 	}
 
 	public String getApiNs() {
-		return apiNs;
+		return this.apiNs;
 	}
 
 	/**
@@ -448,7 +470,7 @@ public class Configuration {
 	}
 
 	public String getActionNs() {
-		return actionNs;
+		return this.actionNs;
 	}
 
 	/**
@@ -463,7 +485,7 @@ public class Configuration {
 	}
 
 	public String getRemotingApiVar() {
-		return remotingApiVar;
+		return this.remotingApiVar;
 	}
 
 	/**
@@ -478,7 +500,7 @@ public class Configuration {
 	}
 
 	public String getPollingUrlsVar() {
-		return pollingUrlsVar;
+		return this.pollingUrlsVar;
 	}
 
 	/**
@@ -492,23 +514,8 @@ public class Configuration {
 		this.pollingUrlsVar = pollingUrlsVar;
 	}
 
-	public String getSseVar() {
-		return sseVar;
-	}
-
-	/**
-	 * Changes the name of the SSE urls object variable
-	 * <p>
-	 * Defaults to SSE
-	 *
-	 * @param sseVar new SSE urls object variable name
-	 */
-	public void setSseVar(String sseVar) {
-		this.sseVar = sseVar;
-	}
-
 	public boolean isFullRouterUrl() {
-		return fullRouterUrl;
+		return this.fullRouterUrl;
 	}
 
 	/**
@@ -524,13 +531,13 @@ public class Configuration {
 	}
 
 	public String getBaseRouterUrl() {
-		return baseRouterUrl;
+		return this.baseRouterUrl;
 	}
 
 	/**
 	 * If not null the {@link ApiController} does not use the url of the request to
 	 * determine the router url instead he uses the value of this variable as the base and
-	 * adds /router, /poll and /sse.<br>
+	 * adds /router and /poll.<br>
 	 * The fullRouterUrl setting is ignored when this variable is not null
 	 * <p>
 	 * Defaults to null.
@@ -542,7 +549,7 @@ public class Configuration {
 	}
 
 	public ConversionService getConversionService() {
-		return conversionService;
+		return this.conversionService;
 	}
 
 	public void setConversionService(ConversionService conversionService) {
@@ -550,7 +557,7 @@ public class Configuration {
 	}
 
 	public JsonHandler getJsonHandler() {
-		return jsonHandler;
+		return this.jsonHandler;
 	}
 
 	public void setJsonHandler(JsonHandler jsonHandler) {

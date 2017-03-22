@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -45,19 +45,27 @@ public class RawJsonControllerTest extends JettyTest {
 		testAndCheck("rawJsonController", "listUsers3", 2, false);
 		testAndCheck("rawJsonController", "listUsers4", 2, true);
 		testAndCheck("rawJsonController", "listUsers5", 2, true);
+
+		testAndCheck("rawJsonController", "listUsers1Ed", null, true);
+		testAndCheck("rawJsonController", "listUsers2Ed", 2, true);
+		testAndCheck("rawJsonController", "listUsers3Ed", 2, false);
+		testAndCheck("rawJsonController", "listUsers4Ed", 2, true);
+		testAndCheck("rawJsonController", "listUsers5Ed", 2, true);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static void testAndCheck(String action, String method, Integer total,
-			boolean success) throws IOException, JsonParseException, JsonMappingException {
+			boolean success)
+			throws IOException, JsonParseException, JsonMappingException {
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
 			HttpPost post = new HttpPost("http://localhost:9998/controller/router");
 
-			StringEntity postEntity = new StringEntity("{\"action\":\"" + action
-					+ "\",\"method\":\"" + method
-					+ "\",\"data\":[],\"type\":\"rpc\",\"tid\":1}", "UTF-8");
+			StringEntity postEntity = new StringEntity(
+					"{\"action\":\"" + action + "\",\"method\":\"" + method
+							+ "\",\"data\":[],\"type\":\"rpc\",\"tid\":1}",
+					"UTF-8");
 			post.setEntity(postEntity);
 			post.setHeader("Content-Type", "application/json; charset=UTF-8");
 
@@ -93,10 +101,10 @@ public class RawJsonControllerTest extends JettyTest {
 					.get("records");
 			assertEquals(2, records.size());
 
-			assertEquals("4cf8e5b8924e23349fb99454", ((Map<String, Object>) records
-					.get(0).get("_id")).get("$oid"));
-			assertEquals("4cf8e5b8924e2334a0b99454", ((Map<String, Object>) records
-					.get(1).get("_id")).get("$oid"));
+			assertEquals("4cf8e5b8924e23349fb99454",
+					((Map<String, Object>) records.get(0).get("_id")).get("$oid"));
+			assertEquals("4cf8e5b8924e2334a0b99454",
+					((Map<String, Object>) records.get(1).get("_id")).get("$oid"));
 		}
 		finally {
 			IOUtils.closeQuietly(response);

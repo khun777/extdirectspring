@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
  */
 package ch.ralscha.extdirectspring.bean;
 
+import java.util.Map;
+
 /**
- * Represents the request of a Ext Direct call. Internal class.
+ * Represents the request of an Ext Direct call. Internal class.
  */
 public class ExtDirectRequest {
 
@@ -30,11 +32,13 @@ public class ExtDirectRequest {
 
 	private Object data;
 
+	private Map<String, Object> metadata;
+
 	/**
 	 * @return name of the spring managed bean
 	 */
 	public String getAction() {
-		return action;
+		return this.action;
 	}
 
 	public void setAction(String action) {
@@ -45,7 +49,7 @@ public class ExtDirectRequest {
 	 * @return payload of the request
 	 */
 	public Object getData() {
-		return data;
+		return this.data;
 	}
 
 	public void setData(Object data) {
@@ -56,7 +60,7 @@ public class ExtDirectRequest {
 	 * @return method name that is member of the spring managed bean
 	 */
 	public String getMethod() {
-		return method;
+		return this.method;
 	}
 
 	public void setMethod(String method) {
@@ -68,7 +72,7 @@ public class ExtDirectRequest {
 	 * to return the same tid
 	 */
 	public int getTid() {
-		return tid;
+		return this.tid;
 	}
 
 	public void setTid(int tid) {
@@ -79,17 +83,29 @@ public class ExtDirectRequest {
 	 * @return the type of the message. "event" for polling or "rpc" for a method call
 	 */
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
 	}
 
+	/**
+	 * @return metadata parameters
+	 */
+	public Map<String, Object> getMetadata() {
+		return this.metadata;
+	}
+
+	public void setMetadata(Map<String, Object> metadata) {
+		this.metadata = metadata;
+	}
+
 	@Override
 	public String toString() {
-		return "ExtDirectRequest [action=" + action + ", method=" + method + ", type="
-				+ type + ", tid=" + tid + ", data=" + data + "]";
+		return "ExtDirectRequest [action=" + this.action + ", method=" + this.method
+				+ ", type=" + this.type + ", tid=" + this.tid + ", data=" + this.data
+				+ ", metadata=" + this.metadata + "]";
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.filter;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertSame;
 
 import java.util.Arrays;
@@ -38,8 +38,8 @@ public class NumericFilterTest {
 
 	@Parameters
 	public static Collection<Object[]> types() {
-		return Arrays.asList(new Object[][] { { "numeric" }, { "int" }, { "float" },
-				{ "number" } });
+		return Arrays.asList(
+				new Object[][] { { "numeric" }, { "int" }, { "float" }, { "number" } });
 	}
 
 	@Parameter
@@ -49,7 +49,7 @@ public class NumericFilterTest {
 	public void testNumericFilterLT() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("field", "aField");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "lt");
 		json.put("value", 12);
 
@@ -65,7 +65,7 @@ public class NumericFilterTest {
 	public void testNumericFilterGT() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("field", "aField2");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "gt");
 		json.put("value", 13);
 
@@ -81,7 +81,7 @@ public class NumericFilterTest {
 	public void testNumericFilterEQ() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("field", "aField3");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "eq");
 		json.put("value", "1");
 
@@ -98,7 +98,7 @@ public class NumericFilterTest {
 	public void testNumericFilterNE() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("field", "aField4");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "ne");
 		json.put("value", "3");
 
@@ -115,7 +115,7 @@ public class NumericFilterTest {
 	public void testNumericFilterGTE() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("field", "aField5");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "gte");
 		json.put("value", "4");
 
@@ -132,7 +132,7 @@ public class NumericFilterTest {
 	public void testNumericFilterLTE() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("field", "aField6");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "lte");
 		json.put("value", "5");
 
@@ -149,7 +149,7 @@ public class NumericFilterTest {
 	public void testNumericPropertyFilterLT() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("property", "aField");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "lt");
 		json.put("value", 12);
 
@@ -166,7 +166,7 @@ public class NumericFilterTest {
 	public void testNumericPropertyFilterGT() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("property", "aField2");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "gt");
 		json.put("value", 13);
 
@@ -183,7 +183,7 @@ public class NumericFilterTest {
 	public void testNumericPropertyFilterEQ() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("property", "aField3");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "eq");
 		json.put("value", "1");
 
@@ -200,7 +200,7 @@ public class NumericFilterTest {
 	public void testNumericPropertyFilterNE() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("property", "aField4");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "ne");
 		json.put("value", "3");
 
@@ -217,7 +217,7 @@ public class NumericFilterTest {
 	public void testNumericPropertyFilterGTE() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("property", "aField5");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("comparison", "gte");
 		json.put("value", "4");
 
@@ -234,7 +234,7 @@ public class NumericFilterTest {
 	public void testNumericPropertyFilterLTE() {
 		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("property", "aField6");
-		json.put("type", type);
+		json.put("type", this.type);
 		json.put("operator", "lte");
 		json.put("value", "5");
 

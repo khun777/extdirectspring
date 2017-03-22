@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.controller;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,20 +30,13 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.logging.LogFactory;
-import org.fest.util.Arrays;
+import org.assertj.core.util.Arrays;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import ch.ralscha.extdirectspring.bean.ExtDirectPollResponse;
-import ch.ralscha.extdirectspring.bean.ExtDirectRequest;
-import ch.ralscha.extdirectspring.bean.ExtDirectResponse;
-import ch.ralscha.extdirectspring.bean.SSEvent;
-import ch.ralscha.extdirectspring.util.ExtDirectSpringUtil;
-import ch.ralscha.extdirectspring.util.JsonHandler;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -53,6 +46,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.ralscha.extdirectspring.bean.BeanMethod;
+import ch.ralscha.extdirectspring.bean.ExtDirectPollResponse;
+import ch.ralscha.extdirectspring.bean.ExtDirectRequest;
+import ch.ralscha.extdirectspring.bean.ExtDirectResponse;
+import ch.ralscha.extdirectspring.util.JsonHandler;
 
 public class ControllerUtil {
 
@@ -81,7 +80,8 @@ public class ControllerUtil {
 			List<Cookie> cookies, boolean withSession) throws Exception {
 		MockHttpServletRequestBuilder request = post(
 				"/poll/" + bean + "/" + method + "/" + event).accept(MediaType.ALL)
-				.contentType(MediaType.APPLICATION_JSON).characterEncoding("UTF-8");
+						.contentType(MediaType.APPLICATION_JSON)
+						.characterEncoding("UTF-8");
 
 		if (cookies != null) {
 			request.cookie(cookies.toArray(new Cookie[cookies.size()]));
@@ -106,45 +106,6 @@ public class ControllerUtil {
 				.andExpect(content().encoding("UTF-8")).andReturn();
 
 		return readDirectPollResponse(result.getResponse().getContentAsByteArray());
-	}
-
-	public static List<SSEvent> performSseRequest(MockMvc mockMvc, String bean,
-			String method, Map<String, String> params, HttpHeaders headers,
-			List<Cookie> cookies) throws Exception {
-		return performSseRequest(mockMvc, bean, method, params, headers, cookies, false);
-	}
-
-	public static List<SSEvent> performSseRequest(MockMvc mockMvc, String bean,
-			String method, Map<String, String> params, HttpHeaders headers,
-			List<Cookie> cookies, boolean withSession) throws Exception {
-		MockHttpServletRequestBuilder request = post("/sse/" + bean + "/" + method)
-				.accept(MediaType.ALL)
-				.contentType(MediaType.parseMediaType("text/event-stream"))
-				.characterEncoding("UTF-8");
-
-		if (cookies != null) {
-			request.cookie(cookies.toArray(new Cookie[cookies.size()]));
-		}
-
-		if (withSession) {
-			request.session(new MockHttpSession());
-		}
-
-		if (params != null) {
-			for (String paramName : params.keySet()) {
-				request.param(paramName, params.get(paramName));
-			}
-		}
-
-		if (headers != null) {
-			request.headers(headers);
-		}
-
-		MvcResult result = mockMvc.perform(request).andExpect(status().isOk())
-				.andExpect(content().contentType("text/event-stream;charset=UTF-8"))
-				.andExpect(content().encoding("UTF-8")).andReturn();
-
-		return readDirectSseResponse(result.getResponse().getContentAsByteArray());
 	}
 
 	public static MvcResult performRouterRequest(MockMvc mockMvc, String content)
@@ -190,16 +151,23 @@ public class ControllerUtil {
 
 	public static String createEdsRequest(String action, String method, int tid,
 			Object data) {
-		return createEdsRequest(action, method, false, tid, data);
+		return createEdsRequest(action, method, false, tid, data, null);
 	}
 
 	public static String createEdsRequest(String action, String method,
-			boolean namedParameter, int tid, Object data) {
+			boolean namedParameter, int tid, Object data, Map<String, Object> metadata) {
 		ExtDirectRequest dr = new ExtDirectRequest();
 		dr.setAction(action);
 		dr.setMethod(method);
 		dr.setTid(tid);
 		dr.setType("rpc");
+
+		if (metadata != null) {
+			dr.setMetadata(metadata);
+		}
+		else {
+			dr.setMetadata(null);
+		}
 
 		if (namedParameter && data != null) {
 			if (Arrays.isArray(data)) {
@@ -224,57 +192,93 @@ public class ControllerUtil {
 		return null;
 	}
 
-	public static Object sendAndReceive(MockMvc mockMvc, HttpHeaders headers,
-			String bean, String method, Object expectedResultOrType,
-			Object... requestData) {
-		return sendAndReceive(mockMvc, false, headers, null, bean, method, false,
+	public static String createEdsRequest(List<BeanMethod> methods) {
+
+		List<ExtDirectRequest> edrs = new ArrayList<ExtDirectRequest>();
+		for (BeanMethod method : methods) {
+			ExtDirectRequest dr = new ExtDirectRequest();
+			dr.setAction(method.getBean());
+			dr.setMethod(method.getMethod());
+			dr.setTid(method.getTid());
+			dr.setType("rpc");
+			dr.setData(method.getData());
+			edrs.add(dr);
+		}
+
+		try {
+			return mapper.writeValueAsString(edrs);
+		}
+		catch (JsonProcessingException e) {
+			fail("createEdsRequest: " + e.getMessage());
+		}
+		return null;
+	}
+
+	public static Object sendAndReceive(MockMvc mockMvc, HttpHeaders headers, String bean,
+			String method, Object expectedResultOrType, Object... requestData) {
+		return sendAndReceive(mockMvc, false, headers, null, null, bean, method, false,
 				expectedResultOrType, requestData);
 	}
 
 	public static Object sendAndReceive(MockMvc mockMvc, HttpHeaders headers,
-			List<Cookie> cookies, String bean, String method,
-			Object expectedResultOrType, Object... requestData) {
-		return sendAndReceive(mockMvc, false, headers, cookies, bean, method, false,
+			List<Cookie> cookies, String bean, String method, Object expectedResultOrType,
+			Object... requestData) {
+		return sendAndReceive(mockMvc, false, headers, cookies, null, bean, method, false,
+				expectedResultOrType, requestData);
+	}
+
+	public static Object sendAndReceive(MockMvc mockMvc, String bean, String method,
+			Map<String, Object> metadata, Object expectedResultOrType,
+			Object... requestData) {
+		return sendAndReceive(mockMvc, false, null, null, metadata, bean, method, false,
 				expectedResultOrType, requestData);
 	}
 
 	public static Object sendAndReceive(MockMvc mockMvc, String bean, String method,
 			Object expectedResultOrType, Object... requestData) {
-		return sendAndReceive(mockMvc, false, null, null, bean, method, false,
+		return sendAndReceive(mockMvc, false, null, null, null, bean, method, false,
 				expectedResultOrType, requestData);
+	}
+
+	public static Object sendAndReceiveNamed(MockMvc mockMvc, HttpHeaders headers,
+			List<Cookie> cookies, String bean, String method, Object expectedResultOrType,
+			Map<String, Object> requestData) {
+		return sendAndReceive(mockMvc, false, headers, cookies, null, bean, method, true,
+				expectedResultOrType, new Object[] { requestData });
 	}
 
 	public static Object sendAndReceiveNamed(MockMvc mockMvc, String bean, String method,
 			Object expectedResultOrType, Map<String, Object> requestData) {
-		return sendAndReceive(mockMvc, false, null, null, bean, method, true,
+		return sendAndReceive(mockMvc, false, null, null, null, bean, method, true,
 				expectedResultOrType, new Object[] { requestData });
 	}
 
 	public static Object sendAndReceiveWithSession(MockMvc mockMvc, HttpHeaders headers,
 			String bean, String method, Object expectedResultOrType,
 			Object... requestData) {
-		return sendAndReceive(mockMvc, true, headers, null, bean, method, true,
+		return sendAndReceive(mockMvc, true, headers, null, null, bean, method, true,
 				expectedResultOrType, new Object[] { requestData });
 	}
 
 	public static Object sendAndReceiveWithSession(MockMvc mockMvc, HttpHeaders headers,
-			List<Cookie> cookies, String bean, String method,
-			Object expectedResultOrType, Object... requestData) {
-		return sendAndReceive(mockMvc, true, headers, cookies, bean, method, true,
+			List<Cookie> cookies, String bean, String method, Object expectedResultOrType,
+			Object... requestData) {
+		return sendAndReceive(mockMvc, true, headers, cookies, null, bean, method, true,
 				expectedResultOrType, new Object[] { requestData });
 	}
 
 	public static Object sendAndReceive(MockMvc mockMvc, boolean withSession,
-			HttpHeaders headers, List<Cookie> cookies, String bean, String method,
-			boolean namedParameters, Object expectedResultOrType, Object... requestData) {
+			HttpHeaders headers, List<Cookie> cookies, Map<String, Object> metadata,
+			String bean, String method, boolean namedParameters,
+			Object expectedResultOrType, Object... requestData) {
 
 		int tid = (int) (Math.random() * 1000);
 
 		MvcResult result = null;
 		try {
-			result = performRouterRequest(mockMvc,
-					createEdsRequest(bean, method, namedParameters, tid, requestData),
-					null, headers, cookies, withSession);
+			result = performRouterRequest(mockMvc, createEdsRequest(bean, method,
+					namedParameters, tid, requestData, metadata), null, headers, cookies,
+					withSession);
 		}
 		catch (JsonProcessingException e) {
 			fail("perform post to /router" + e.getMessage());
@@ -285,8 +289,8 @@ public class ControllerUtil {
 			return null;
 		}
 
-		List<ExtDirectResponse> responses = readDirectResponses(result.getResponse()
-				.getContentAsByteArray());
+		List<ExtDirectResponse> responses = readDirectResponses(
+				result.getResponse().getContentAsByteArray());
 		assertThat(responses).hasSize(1);
 
 		ExtDirectResponse edResponse = responses.get(0);
@@ -324,14 +328,15 @@ public class ControllerUtil {
 
 	}
 
-	public static Object sendAndReceiveObject(MockMvc mockMvc, String bean, String method) {
+	public static Object sendAndReceiveObject(MockMvc mockMvc, String bean,
+			String method) {
 		int tid = (int) (Math.random() * 1000);
 
 		MvcResult result = null;
 		try {
 			result = performRouterRequest(mockMvc,
-					createEdsRequest(bean, method, false, tid, null), null, null, null,
-					false);
+					createEdsRequest(bean, method, false, tid, null, null), null, null,
+					null, false);
 		}
 		catch (JsonProcessingException e) {
 			fail("perform post to /router" + e.getMessage());
@@ -342,8 +347,8 @@ public class ControllerUtil {
 			return null;
 		}
 
-		List<ExtDirectResponse> responses = readDirectResponses(result.getResponse()
-				.getContentAsByteArray());
+		List<ExtDirectResponse> responses = readDirectResponses(
+				result.getResponse().getContentAsByteArray());
 		assertThat(responses).hasSize(1);
 
 		ExtDirectResponse edResponse = responses.get(0);
@@ -360,6 +365,45 @@ public class ControllerUtil {
 	public static Map<String, Object> sendAndReceiveMap(MockMvc mockMvc, String bean,
 			String method) {
 		return (Map<String, Object>) sendAndReceiveObject(mockMvc, bean, method);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<Map<String, Object>> sendAndReceiveMultiple(MockMvc mockMvc,
+			List<BeanMethod> beanMethods) {
+		for (BeanMethod beanMethod : beanMethods) {
+			beanMethod.setTid((int) (Math.random() * 1000));
+		}
+
+		MvcResult result = null;
+		try {
+			result = performRouterRequest(mockMvc, createEdsRequest(beanMethods));
+		}
+		catch (JsonProcessingException e) {
+			fail("perform post to /router" + e.getMessage());
+			return null;
+		}
+		catch (Exception e) {
+			fail("perform post to /router" + e.getMessage());
+			return null;
+		}
+
+		List<ExtDirectResponse> responses = readDirectResponses(
+				result.getResponse().getContentAsByteArray());
+		assertThat(responses).hasSize(beanMethods.size());
+
+		List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < beanMethods.size(); i++) {
+			ExtDirectResponse edResponse = responses.get(i);
+			BeanMethod beanMethod = beanMethods.get(i);
+			assertThat(edResponse.getAction()).isEqualTo(beanMethod.getBean());
+			assertThat(edResponse.getMethod()).isEqualTo(beanMethod.getMethod());
+			assertThat(edResponse.getTid()).isEqualTo(beanMethod.getTid());
+			assertThat(edResponse.getWhere()).isNull();
+
+			results.add((Map<String, Object>) edResponse.getResult());
+		}
+
+		return results;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -385,8 +429,8 @@ public class ControllerUtil {
 		try {
 			return mapper.readValue(response,
 					new TypeReference<List<ExtDirectResponse>>() {/*
-																 * nothing here
-																 */
+																	 * nothing here
+																	 */
 					});
 		}
 		catch (JsonParseException e) {
@@ -445,70 +489,6 @@ public class ControllerUtil {
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public static List<SSEvent> readDirectSseResponse(byte[] contentAsByteArray) {
-
-		List<SSEvent> events = new ArrayList<SSEvent>();
-
-		StringBuilder commentLines = new StringBuilder(32);
-		StringBuilder dataLines = new StringBuilder(32);
-
-		SSEvent event = null;
-		String content = new String(contentAsByteArray, ExtDirectSpringUtil.UTF8_CHARSET);
-		for (String line : content.split("\\n")) {
-
-			if (line.isEmpty() && event != null) {
-				if (dataLines.length() > 0) {
-					event.setData(dataLines.toString());
-				}
-				if (commentLines.length() > 0) {
-					event.setComment(commentLines.toString());
-				}
-				events.add(event);
-				event = null;
-				commentLines = new StringBuilder(32);
-				dataLines = new StringBuilder(32);
-				continue;
-			}
-			else if (event == null) {
-				event = new SSEvent();
-			}
-
-			if (line.startsWith(":")) {
-				if (commentLines.length() > 0) {
-					commentLines.append("\n");
-				}
-				commentLines.append(line.substring(1).trim());
-			}
-			else if (line.startsWith("data:")) {
-				if (dataLines.length() > 0) {
-					dataLines.append("\n");
-				}
-				dataLines.append(line.substring(5).trim());
-			}
-			else if (line.startsWith("retry:")) {
-				event.setRetry(Integer.valueOf(line.substring(6).trim()));
-			}
-			else if (line.startsWith("event:")) {
-				event.setEvent(line.substring(6).trim());
-			}
-			else if (line.startsWith("id:")) {
-				event.setId(line.substring(3).trim());
-			}
-		}
-
-		if (event != null) {
-			if (dataLines.length() > 0) {
-				event.setData(dataLines.toString());
-			}
-			if (commentLines.length() > 0) {
-				event.setComment(commentLines.toString());
-			}
-			events.add(event);
-		}
-
-		return events;
 	}
 
 }

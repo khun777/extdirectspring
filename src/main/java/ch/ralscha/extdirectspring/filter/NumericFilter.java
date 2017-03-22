@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ public class NumericFilter extends Filter {
 	}
 
 	public Number getValue() {
-		return value;
+		return this.value;
 	}
 
 	@Override
 	public String toString() {
-		return "NumericFilter [value=" + value + ", getField()=" + getField()
+		return "NumericFilter [value=" + this.value + ", getField()=" + getField()
 				+ ", getRawComparison()=" + getRawComparison() + ", getComparison()="
 				+ getComparison() + "]";
 	}

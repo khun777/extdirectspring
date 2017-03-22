@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package ch.ralscha.extdirectspring.bean.api;
 import java.util.List;
 import java.util.Map;
 
-import ch.ralscha.extdirectspring.util.MapActionSerializer;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import ch.ralscha.extdirectspring.util.MapActionSerializer;
 
 public abstract class RemotingApiMixin {
 	@JsonSerialize(using = MapActionSerializer.class)

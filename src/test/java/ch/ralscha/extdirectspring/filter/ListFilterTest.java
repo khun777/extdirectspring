@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.filter;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +27,8 @@ public class ListFilterTest {
 	@Test
 	public void testList() {
 		String[] values = { "one", "two", "three" };
-		ListFilter<String> filter = new ListFilter<String>("field",
-				Arrays.asList(values), null, null);
+		ListFilter<String> filter = new ListFilter<String>("field", Arrays.asList(values),
+				null, null);
 
 		List<String> list = filter.getValue();
 		assertThat(list).hasSize(3);

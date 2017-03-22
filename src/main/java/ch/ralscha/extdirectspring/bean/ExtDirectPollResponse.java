@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class ExtDirectPollResponse extends BaseResponse {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -41,7 +41,7 @@ public class ExtDirectPollResponse extends BaseResponse {
 	}
 
 	public Object getData() {
-		return data;
+		return this.data;
 	}
 
 	public void setData(Object data) {
@@ -50,7 +50,7 @@ public class ExtDirectPollResponse extends BaseResponse {
 
 	@Override
 	public String toString() {
-		return "ExtDirectPollResponse [name=" + name + ", data=" + data + "]";
+		return "ExtDirectPollResponse [name=" + this.name + ", data=" + this.data + "]";
 	}
 
 }

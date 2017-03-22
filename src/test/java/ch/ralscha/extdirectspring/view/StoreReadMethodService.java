@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethodType;
+import ch.ralscha.extdirectspring.bean.EdStoreResult;
 import ch.ralscha.extdirectspring.bean.ExtDirectStoreResult;
 import ch.ralscha.extdirectspring.bean.ModelAndJsonView;
 
@@ -100,4 +101,33 @@ public class StoreReadMethodService extends BaseViewService {
 		return result;
 	}
 
+	@ExtDirectMethod(value = ExtDirectMethodType.STORE_READ)
+	public EdStoreResult resultSummaryViewEd() {
+		EdStoreResult result = EdStoreResult.success(createEmployees(2));
+		result.setJsonView(Views.Summary.class);
+		return result;
+	}
+
+	@ExtDirectMethod(value = ExtDirectMethodType.STORE_READ)
+	public EdStoreResult resultDetailViewEd() {
+		EdStoreResult result = EdStoreResult.success(createEmployees(2));
+		result.setJsonView(Views.Detail.class);
+		return result;
+	}
+
+	@ExtDirectMethod(value = ExtDirectMethodType.STORE_READ,
+			jsonView = Views.Summary.class)
+	public EdStoreResult overrideResultDetailViewEd() {
+		EdStoreResult result = EdStoreResult.success(createEmployees(2));
+		result.setJsonView(Views.Detail.class);
+		return result;
+	}
+
+	@ExtDirectMethod(value = ExtDirectMethodType.STORE_READ,
+			jsonView = Views.Summary.class)
+	public EdStoreResult overrideResultNoViewEd() {
+		EdStoreResult result = EdStoreResult.success(createEmployees(2));
+		result.setJsonView(ExtDirectMethod.NoJsonView.class);
+		return result;
+	}
 }

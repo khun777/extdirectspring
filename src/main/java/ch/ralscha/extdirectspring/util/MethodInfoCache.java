@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@ import org.springframework.stereotype.Service;
  * A simple cache for methods with key beanName/methodName
  */
 @Service
-public class MethodInfoCache implements
-		Iterable<Map.Entry<MethodInfoCache.Key, MethodInfo>> {
+public class MethodInfoCache
+		implements Iterable<Map.Entry<MethodInfoCache.Key, MethodInfo>> {
 
 	private final Map<Key, MethodInfo> cache;
 
 	public MethodInfoCache() {
-		cache = new HashMap<Key, MethodInfo>();
+		this.cache = new HashMap<Key, MethodInfo>();
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class MethodInfoCache implements
 	public void put(String beanName, Class<?> clazz, Method method,
 			ApplicationContext context) {
 		MethodInfo info = new MethodInfo(clazz, context, beanName, method);
-		cache.put(new Key(beanName, method.getName()), info);
+		this.cache.put(new Key(beanName, method.getName()), info);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class MethodInfoCache implements
 	 * @return the found methodInfo object, null if there is no method found in the cache
 	 */
 	public MethodInfo get(String beanName, String methodName) {
-		return cache.get(new Key(beanName, methodName));
+		return this.cache.get(new Key(beanName, methodName));
 	}
 
 	public final static class Key {
@@ -75,7 +75,7 @@ public class MethodInfoCache implements
 		}
 
 		public String getBeanName() {
-			return beanName;
+			return this.beanName;
 		}
 
 		@Override
@@ -85,24 +85,24 @@ public class MethodInfoCache implements
 			}
 
 			Key other = (Key) o;
-			return ExtDirectSpringUtil.equal(beanName, other.beanName)
-					&& ExtDirectSpringUtil.equal(methodName, other.methodName);
+			return ExtDirectSpringUtil.equal(this.beanName, other.beanName)
+					&& ExtDirectSpringUtil.equal(this.methodName, other.methodName);
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(new Object[] { beanName, methodName });
+			return Arrays.hashCode(new Object[] { this.beanName, this.methodName });
 		}
 
 	}
 
 	@Override
 	public Iterator<Entry<Key, MethodInfo>> iterator() {
-		return cache.entrySet().iterator();
+		return this.cache.entrySet().iterator();
 	}
 
 	public void clear() {
-		cache.clear();
+		this.cache.clear();
 	}
 
 }

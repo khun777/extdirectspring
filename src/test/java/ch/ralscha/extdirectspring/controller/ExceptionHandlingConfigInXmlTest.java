@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.controller;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class ExceptionHandlingConfigInXmlTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
@@ -53,9 +53,9 @@ public class ExceptionHandlingConfigInXmlTest {
 
 		String edRequest = ControllerUtil.createEdsRequest("remoteProviderSimple",
 				"method4b", 2, new Object[] { 3, "xxx", "string.param" });
-		MvcResult result = ControllerUtil.performRouterRequest(mockMvc, edRequest);
-		List<ExtDirectResponse> responses = ControllerUtil.readDirectResponses(result
-				.getResponse().getContentAsByteArray());
+		MvcResult result = ControllerUtil.performRouterRequest(this.mockMvc, edRequest);
+		List<ExtDirectResponse> responses = ControllerUtil
+				.readDirectResponses(result.getResponse().getContentAsByteArray());
 
 		assertThat(responses).hasSize(1);
 		ExtDirectResponse resp = responses.get(0);
@@ -65,8 +65,8 @@ public class ExceptionHandlingConfigInXmlTest {
 		assertThat(resp.getTid()).isEqualTo(2);
 		assertThat(resp.getMessage()).isEqualTo("there is something wrong");
 		assertThat(resp.getResult()).isNull();
-		assertThat(resp.getWhere()).startsWith(
-				"java.lang.NumberFormatException: For input string: \"xxx\"");
+		assertThat(resp.getWhere())
+				.startsWith("java.lang.NumberFormatException: For input string: \"xxx\"");
 	}
 
 	@Test
@@ -75,9 +75,9 @@ public class ExceptionHandlingConfigInXmlTest {
 		String edRequest = ControllerUtil.createEdsRequest("remoteProviderSimple2",
 				"method4", 2, new Object[] { 3, 2.5, "string.param" });
 
-		MvcResult result = ControllerUtil.performRouterRequest(mockMvc, edRequest);
-		List<ExtDirectResponse> responses = ControllerUtil.readDirectResponses(result
-				.getResponse().getContentAsByteArray());
+		MvcResult result = ControllerUtil.performRouterRequest(this.mockMvc, edRequest);
+		List<ExtDirectResponse> responses = ControllerUtil
+				.readDirectResponses(result.getResponse().getContentAsByteArray());
 
 		assertThat(responses).hasSize(1);
 		ExtDirectResponse resp = responses.get(0);
@@ -87,8 +87,8 @@ public class ExceptionHandlingConfigInXmlTest {
 		assertThat(resp.getTid()).isEqualTo(2);
 		assertThat(resp.getMessage()).isEqualTo("Panic!!!");
 		assertThat(resp.getResult()).isNull();
-		assertThat(resp.getWhere()).startsWith(
-				"Bean or Method 'remoteProviderSimple2.method4' not found");
+		assertThat(resp.getWhere())
+				.startsWith("Bean or Method 'remoteProviderSimple2.method4' not found");
 
 	}
 
@@ -97,9 +97,9 @@ public class ExceptionHandlingConfigInXmlTest {
 		String edRequest = ControllerUtil.createEdsRequest("remoteProviderSimple",
 				"method11b", 3, null);
 
-		MvcResult result = ControllerUtil.performRouterRequest(mockMvc, edRequest);
-		List<ExtDirectResponse> responses = ControllerUtil.readDirectResponses(result
-				.getResponse().getContentAsByteArray());
+		MvcResult result = ControllerUtil.performRouterRequest(this.mockMvc, edRequest);
+		List<ExtDirectResponse> responses = ControllerUtil
+				.readDirectResponses(result.getResponse().getContentAsByteArray());
 
 		assertThat(responses).hasSize(1);
 		ExtDirectResponse resp = responses.get(0);
@@ -117,9 +117,9 @@ public class ExceptionHandlingConfigInXmlTest {
 		String edRequest = ControllerUtil.createEdsRequest("remoteProviderSimple",
 				"method11", 3, null);
 
-		MvcResult result = ControllerUtil.performRouterRequest(mockMvc, edRequest);
-		List<ExtDirectResponse> responses = ControllerUtil.readDirectResponses(result
-				.getResponse().getContentAsByteArray());
+		MvcResult result = ControllerUtil.performRouterRequest(this.mockMvc, edRequest);
+		List<ExtDirectResponse> responses = ControllerUtil
+				.readDirectResponses(result.getResponse().getContentAsByteArray());
 
 		assertThat(responses).hasSize(1);
 		ExtDirectResponse resp = responses.get(0);

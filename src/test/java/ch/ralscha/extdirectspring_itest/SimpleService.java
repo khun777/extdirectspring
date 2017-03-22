@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethodType;
-import ch.ralscha.extdirectspring.bean.SSEvent;
 
 @Service
 public class SimpleService {
@@ -53,12 +52,4 @@ public class SimpleService {
 		return id;
 	}
 
-	@ExtDirectMethod(value = ExtDirectMethodType.SSE, group = "itest_simple",
-			streamResponse = true)
-	public SSEvent sse(@RequestParam String id) {
-		SSEvent event = new SSEvent();
-		event.setId(id);
-		event.setData("d" + id);
-		return event;
-	}
 }

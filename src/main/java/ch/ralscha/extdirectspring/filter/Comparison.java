@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum Comparison {
-	LESS_THAN("lt", "<"), LESS_THAN_OR_EQUAL("lte", "<="), GREATER_THAN("gt", ">"), GREATER_THAN_OR_EQUAL(
-			"gte", ">="), EQUAL("eq", "="), NOT_EQUAL("ne", "!="), LIKE("like"), IN("in");
+	LESS_THAN("lt", "<"), LESS_THAN_OR_EQUAL("lte", "<="), GREATER_THAN("gt", ">"),
+	GREATER_THAN_OR_EQUAL("gte", ">="), EQUAL("eq", "="), NOT_EQUAL("ne", "!="),
+	LIKE("like"), IN("in");
 
 	private final Set<String> externalValues;
 
 	private Comparison(String... values) {
-		externalValues = new HashSet<String>();
-		Collections.addAll(externalValues, values);
+		this.externalValues = new HashSet<String>();
+		Collections.addAll(this.externalValues, values);
 	}
 
 	public boolean is(String externalValue) {
-		return externalValues.contains(externalValue);
+		return this.externalValues.contains(externalValue);
 	}
 
 	public static Comparison fromString(String externalValue) {

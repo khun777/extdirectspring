@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,19 +44,19 @@ public class Filter {
 	}
 
 	public String getField() {
-		return field;
+		return this.field;
 	}
 
 	public String getRawComparison() {
-		return rawComparison;
+		return this.rawComparison;
 	}
 
 	public Comparison getComparison() {
-		return comparison;
+		return this.comparison;
 	}
 
 	public String getOperator() {
-		return rawComparison;
+		return this.rawComparison;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -88,8 +88,9 @@ public class Filter {
 					return new ListFilter(property, (List<?>) source, rawComparison,
 							comparisonFromJson);
 				}
-				return new StringFilter(property, source != null ? source.toString()
-						: null, rawComparison, comparisonFromJson);
+				return new StringFilter(property,
+						source != null ? source.toString() : null, rawComparison,
+						comparisonFromJson);
 			}
 
 			return null;

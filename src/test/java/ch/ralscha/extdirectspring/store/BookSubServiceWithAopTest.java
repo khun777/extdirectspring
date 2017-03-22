@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,26 +38,26 @@ public class BookSubServiceWithAopTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
 	public void testCreate() throws Exception {
-		new CrudTestMethods("bookSubAopService").testCreate(mockMvc);
+		new CrudTestMethods("bookSubAopService").testCreate(this.mockMvc);
 	}
 
 	@Test
 	public void testRead() throws Exception {
-		new CrudTestMethods("bookSubAopService").testRead(mockMvc);
+		new CrudTestMethods("bookSubAopService").testRead(this.mockMvc);
 	}
 
 	@Test
 	public void testUpdate() throws Exception {
-		new CrudTestMethods("bookSubAopService").testUpdate(mockMvc);
+		new CrudTestMethods("bookSubAopService").testUpdate(this.mockMvc);
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-		new CrudTestMethods("bookSubAopService").testDelete(mockMvc);
+		new CrudTestMethods("bookSubAopService").testDelete(this.mockMvc);
 	}
 }

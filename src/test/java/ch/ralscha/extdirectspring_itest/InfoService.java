@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,8 +70,8 @@ public class InfoService {
 	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST, group = "itest_info_service")
 	public ExtDirectFormPostResult updateInfoUser3(Locale locale, @Valid User user,
 			BindingResult bindingResult) {
-		ExtDirectFormPostResult resp = new ExtDirectFormPostResult(locale, messageSource,
-				bindingResult);
+		ExtDirectFormPostResult resp = new ExtDirectFormPostResult(locale,
+				this.messageSource, bindingResult);
 		resp.addResultProperty("lc", user.getName().toLowerCase());
 		return resp;
 	}
@@ -79,8 +79,8 @@ public class InfoService {
 	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST, group = "itest_info_service")
 	public ExtDirectFormPostResult updateInfoUser4(Locale locale, @Valid User user,
 			BindingResult bindingResult) {
-		ExtDirectFormPostResult resp = new ExtDirectFormPostResult(locale, messageSource,
-				bindingResult, true);
+		ExtDirectFormPostResult resp = new ExtDirectFormPostResult(locale,
+				this.messageSource, bindingResult, true);
 		resp.addResultProperty("lc", user.getName().toLowerCase());
 		return resp;
 	}
@@ -88,8 +88,8 @@ public class InfoService {
 	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST, group = "itest_info_service")
 	public ExtDirectFormPostResult updateInfoUser5(@Valid User user,
 			BindingResult bindingResult) {
-		ExtDirectFormPostResult resp = new ExtDirectFormPostResult(null, messageSource,
-				bindingResult);
+		ExtDirectFormPostResult resp = new ExtDirectFormPostResult(null,
+				this.messageSource, bindingResult);
 		resp.addResultProperty("lc", user.getName().toLowerCase());
 		return resp;
 	}

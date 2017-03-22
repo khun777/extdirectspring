@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package ch.ralscha.extdirectspring.provider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.entry;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +42,10 @@ public class RemoteProviderImplementation implements RemoteProviderInterface {
 	}
 
 	@Override
-	public List<Row> storeRead(ExtDirectStoreReadRequest request, @RequestParam(
-			value = "lastName") String name, @RequestParam(value = "theAge",
-			defaultValue = "40") Integer age, Boolean active,
-			final HttpServletRequest httpRequest) {
+	public List<Row> storeRead(ExtDirectStoreReadRequest request,
+			@RequestParam(value = "lastName") String name,
+			@RequestParam(value = "theAge", defaultValue = "40") Integer age,
+			Boolean active, final HttpServletRequest httpRequest) {
 
 		assertThat(age.intValue()).isEqualTo(40);
 		assertThat(httpRequest).isNotNull();

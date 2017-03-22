@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ public class ExtDirectStoreResult<T> extends JsonViewHint {
 		// default constructor
 	}
 
-	@SuppressWarnings("unchecked")
 	public ExtDirectStoreResult(T record) {
 		this((Long) null, Arrays.asList(record), Boolean.TRUE, null);
 	}
@@ -84,15 +83,15 @@ public class ExtDirectStoreResult<T> extends JsonViewHint {
 	}
 
 	public Long getTotal() {
-		return total;
+		return this.total;
 	}
 
 	public Collection<T> getRecords() {
-		return records;
+		return this.records;
 	}
 
 	public Boolean isSuccess() {
-		return success;
+		return this.success;
 	}
 
 	public ExtDirectStoreResult<T> setTotal(Long total) {
@@ -111,8 +110,8 @@ public class ExtDirectStoreResult<T> extends JsonViewHint {
 	}
 
 	public Map<String, Object> getMetaData() {
-		if (metaData != null) {
-			return metaData.getMetaData();
+		if (this.metaData != null) {
+			return this.metaData.getMetaData();
 		}
 		return null;
 	}
@@ -126,7 +125,7 @@ public class ExtDirectStoreResult<T> extends JsonViewHint {
 	 * @return the message
 	 */
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
 	/**
@@ -143,9 +142,9 @@ public class ExtDirectStoreResult<T> extends JsonViewHint {
 
 	@Override
 	public String toString() {
-		return "ExtDirectStoreResult [total=" + total + ", records=" + records
-				+ ", success=" + success + ", metaData=" + metaData + ", message="
-				+ message + "]";
+		return "ExtDirectStoreResult [total=" + this.total + ", records=" + this.records
+				+ ", success=" + this.success + ", metaData=" + this.metaData
+				+ ", message=" + this.message + "]";
 	}
 
 }

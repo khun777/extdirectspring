@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package ch.ralscha.extdirectspring.view;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
 
-import org.fest.assertions.data.MapEntry;
+import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +46,7 @@ public class TreeLoadMethodTest extends BaseViewTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
@@ -88,19 +88,19 @@ public class TreeLoadMethodTest extends BaseViewTest {
 	@SuppressWarnings("unchecked")
 	private void callMethod(String bean, String method, MapEntry... expectedEntries) {
 		List<Map<String, Object>> result = (List<Map<String, Object>>) ControllerUtil
-				.sendAndReceiveObject(mockMvc, bean, method);
+				.sendAndReceiveObject(this.mockMvc, bean, method);
 		assertThat(result).hasSize(2);
 		for (int i = 1; i <= result.size(); i++) {
 			Map<String, Object> model = result.get(i - 1);
 			assertThat(model).hasSize(expectedEntries.length);
 
-			for (MapEntry entry : expectedEntries) {
+			for (MapEntry<String, Object> entry : expectedEntries) {
 				if (entry.key.equals("id")) {
 					assertThat(model).contains(MapEntry.entry("id", i));
 				}
 				else {
-					assertThat(model).contains(
-							MapEntry.entry(entry.key, "" + entry.value + i));
+					assertThat(model)
+							.contains(MapEntry.entry(entry.key, "" + entry.value + i));
 				}
 			}
 		}

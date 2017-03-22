@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,17 @@
  */
 package ch.ralscha.extdirectspring.util;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
 
 import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class MethodInfoCacheTest {
 
@@ -72,12 +71,12 @@ public class MethodInfoCacheTest {
 		MethodInfoCache methodInfoCache = context.getBean(MethodInfoCache.class);
 
 		MethodInfo methodBInfo = methodInfoCache.get("springManagedBean", "methodB");
-		Method methodBWithAnnotation = MethodInfo.findMethodWithAnnotation(
-				methodBInfo.getMethod(), ExtDirectMethod.class);
+		Method methodBWithAnnotation = MethodInfo
+				.findMethodWithAnnotation(methodBInfo.getMethod(), ExtDirectMethod.class);
 		assertThat(methodBWithAnnotation).isEqualTo(methodBInfo.getMethod());
 
-		MethodInfo methodSubBInfo = methodInfoCache
-				.get("springManagedSubBean", "methodB");
+		MethodInfo methodSubBInfo = methodInfoCache.get("springManagedSubBean",
+				"methodB");
 		methodBWithAnnotation = MethodInfo.findMethodWithAnnotation(
 				methodSubBInfo.getMethod(), ExtDirectMethod.class);
 		assertThat(methodSubBInfo.getMethod().equals(methodBWithAnnotation)).isFalse();
@@ -126,21 +125,17 @@ public class MethodInfoCacheTest {
 
 		MethodInfo infoB = methodInfoCache.get("springManagedBean", "methodB");
 
-		assertThat(
-				(Boolean) ExtDirectSpringUtil.invoke(context, "springManagedBean", infoB,
-						null)).isFalse();
-		assertThat(
-				(Boolean) ExtDirectSpringUtil.invoke(context, "springManagedBean", infoB,
-						null)).isFalse();
+		assertThat((Boolean) ExtDirectSpringUtil.invoke(context, "springManagedBean",
+				infoB, null)).isFalse();
+		assertThat((Boolean) ExtDirectSpringUtil.invoke(context, "springManagedBean",
+				infoB, null)).isFalse();
 
 		MethodInfo infoSum = methodInfoCache.get("springManagedBean", "sum");
 
-		assertThat(
-				ExtDirectSpringUtil.invoke(context, "springManagedBean", infoSum,
-						new Object[] { 1, 2 })).isEqualTo(Integer.valueOf(3));
-		assertThat(
-				ExtDirectSpringUtil.invoke(context, "springManagedBean", infoSum,
-						new Object[] { 6, 3 })).isEqualTo(Integer.valueOf(9));
+		assertThat(ExtDirectSpringUtil.invoke(context, "springManagedBean", infoSum,
+				new Object[] { 1, 2 })).isEqualTo(Integer.valueOf(3));
+		assertThat(ExtDirectSpringUtil.invoke(context, "springManagedBean", infoSum,
+				new Object[] { 6, 3 })).isEqualTo(Integer.valueOf(9));
 
 		assertThat(methodInfoCache.get("springManagedBean", "methodC")).isNull();
 		context.close();

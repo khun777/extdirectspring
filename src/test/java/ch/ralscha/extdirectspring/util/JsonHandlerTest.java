@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.util;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -31,10 +31,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
-import ch.ralscha.extdirectspring.bean.ExtDirectRequest;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.ralscha.extdirectspring.bean.ExtDirectRequest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/testApplicationContext.xml")
@@ -87,8 +87,8 @@ public class JsonHandlerTest {
 		map.put("five", new int[] { 1, 2 });
 
 		String expected = "{\n  \"one\" : 1,\n  \"two\" : \"2\",\n  \"three\" : null,\n  \"four\" : false,\n  \"five\" : [ 1, 2 ]\n}";
-		assertEquals(expected, jsonHandler.writeValueAsString(map, true)
-				.replace("\r", ""));
+		assertEquals(expected,
+				jsonHandler.writeValueAsString(map, true).replace("\r", ""));
 
 		JsonTestBean testBean = new JsonTestBean(1, "2", null, Boolean.FALSE,
 				new Integer[] { 1, 2 });

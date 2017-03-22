@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.provider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -34,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.fest.assertions.data.Offset;
+import org.assertj.core.data.Offset;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
+import ch.ralscha.extdirectspring.bean.ExtDirectRequest;
 
 @Service
 @SuppressWarnings("unused")
@@ -65,8 +67,9 @@ public class RemoteProviderSimple {
 	}
 
 	@ExtDirectMethod(group = "group2,groupX")
-	public String method3(long i, Double d, String s) {
-		return String.format("method3() called-%d-%.1f-%s", i, d, s);
+	public String method3(long i, Double d, String s, ExtDirectRequest directRequest) {
+		return String.format("method3() called-%d-%.1f-%s-%s", i, d, s,
+				directRequest != null);
 	}
 
 	@ExtDirectMethod(group = "group2,groupX")
@@ -189,11 +192,10 @@ public class RemoteProviderSimple {
 	}
 
 	@ExtDirectMethod
-	public Map<String, Object> method14(
-			@DateTimeFormat(iso = ISO.DATE_TIME) Date endDate,
-			final String normalParameter, HttpServletRequest request, @DateTimeFormat(
-					iso = ISO.DATE) LocalDate aDate, @NumberFormat(
-					style = NumberFormat.Style.PERCENT) BigDecimal percent) {
+	public Map<String, Object> method14(@DateTimeFormat(iso = ISO.DATE_TIME) Date endDate,
+			final String normalParameter, HttpServletRequest request,
+			@DateTimeFormat(iso = ISO.DATE) LocalDate aDate,
+			@NumberFormat(style = NumberFormat.Style.PERCENT) BigDecimal percent) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("endDate", endDate);
@@ -215,8 +217,8 @@ public class RemoteProviderSimple {
 	}
 
 	@ExtDirectMethod
-	public String method17(
-			@RequestHeader(value = "anotherName", defaultValue = "default") String header) {
+	public String method17(@RequestHeader(value = "anotherName",
+			defaultValue = "default") String header) {
 		return header;
 	}
 
@@ -331,9 +333,19 @@ public class RemoteProviderSimple {
 		return aStr;
 	}
 
-	@ExtDirectMethod
+	@ExtDirectMethod(batched = true)
 	public String method30(@CookieValue(required = false) String stringCookie) {
 		return stringCookie;
+	}
+
+	@ExtDirectMethod(batched = false)
+	public String method31(String input) {
+		return input;
+	}
+
+	@ExtDirectMethod
+	public String methodWithOptional(Optional<String> param1) {
+		return param1.orElse("default value");
 	}
 
 	public static final class BusinessObject {
@@ -354,7 +366,7 @@ public class RemoteProviderSimple {
 		}
 
 		public int getId() {
-			return id;
+			return this.id;
 		}
 
 		public void setId(int id) {
@@ -362,7 +374,7 @@ public class RemoteProviderSimple {
 		}
 
 		public String getName() {
-			return name;
+			return this.name;
 		}
 
 		public void setName(String name) {
@@ -370,7 +382,7 @@ public class RemoteProviderSimple {
 		}
 
 		public BigDecimal getBd() {
-			return bd;
+			return this.bd;
 		}
 
 		public void setBd(BigDecimal bd) {
@@ -379,7 +391,8 @@ public class RemoteProviderSimple {
 
 		@Override
 		public String toString() {
-			return "BusinessObject [id=" + id + ", name=" + name + ", bd=" + bd + "]";
+			return "BusinessObject [id=" + this.id + ", name=" + this.name + ", bd="
+					+ this.bd + "]";
 		}
 
 	}

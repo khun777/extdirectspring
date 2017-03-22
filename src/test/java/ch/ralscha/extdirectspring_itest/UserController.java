@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST)
 	public void updateUser(HttpServletRequest request, HttpServletResponse response,
 			@Valid User user, BindingResult result) {
-		ExtDirectResponseBuilder builder = new ExtDirectResponseBuilder(request, response);
+		ExtDirectResponseBuilder builder = new ExtDirectResponseBuilder(request,
+				response);
 
 		if (request.getParameter("addemailerror") != null) {
 			result.rejectValue("email", "", "another email error");

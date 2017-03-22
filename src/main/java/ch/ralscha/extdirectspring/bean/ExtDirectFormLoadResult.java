@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class ExtDirectFormLoadResult extends JsonViewHint {
 	}
 
 	public Object getData() {
-		return data;
+		return this.data;
 	}
 
 	public void setData(Object data) {
@@ -46,7 +46,7 @@ public class ExtDirectFormLoadResult extends JsonViewHint {
 	}
 
 	public boolean isSuccess() {
-		return success;
+		return this.success;
 	}
 
 	public void setSuccess(boolean success) {
@@ -55,7 +55,8 @@ public class ExtDirectFormLoadResult extends JsonViewHint {
 
 	@Override
 	public String toString() {
-		return "ExtDirectFormLoadResult [data=" + data + ", success=" + success + "]";
+		return "ExtDirectFormLoadResult [data=" + this.data + ", success=" + this.success
+				+ "]";
 	}
 
 }

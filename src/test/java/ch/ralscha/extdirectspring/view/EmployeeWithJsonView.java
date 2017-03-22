@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package ch.ralscha.extdirectspring.view;
 
-import ch.ralscha.extdirectspring.bean.JsonViewHint;
-
 import com.fasterxml.jackson.annotation.JsonView;
+
+import ch.ralscha.extdirectspring.bean.JsonViewHint;
 
 public class EmployeeWithJsonView extends JsonViewHint {
 	private Long id;
@@ -38,7 +38,7 @@ public class EmployeeWithJsonView extends JsonViewHint {
 	private String secretKey;
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -46,7 +46,7 @@ public class EmployeeWithJsonView extends JsonViewHint {
 	}
 
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -54,7 +54,7 @@ public class EmployeeWithJsonView extends JsonViewHint {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -62,7 +62,7 @@ public class EmployeeWithJsonView extends JsonViewHint {
 	}
 
 	public String getAddress() {
-		return address;
+		return this.address;
 	}
 
 	public void setAddress(String address) {
@@ -70,7 +70,7 @@ public class EmployeeWithJsonView extends JsonViewHint {
 	}
 
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
@@ -78,7 +78,7 @@ public class EmployeeWithJsonView extends JsonViewHint {
 	}
 
 	public String getSecretKey() {
-		return secretKey;
+		return this.secretKey;
 	}
 
 	public void setSecretKey(String secretKey) {

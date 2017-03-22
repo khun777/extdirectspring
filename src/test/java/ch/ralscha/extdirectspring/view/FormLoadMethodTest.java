@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package ch.ralscha.extdirectspring.view;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import org.fest.assertions.data.MapEntry;
+import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class FormLoadMethodTest extends BaseViewTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
@@ -124,9 +124,29 @@ public class FormLoadMethodTest extends BaseViewTest {
 		callMethod("formLoadMethodService", "overrideResultNoView", noView());
 	}
 
+	@Test
+	public void testResultSummaryViewEd() {
+		callMethod("formLoadMethodService", "resultSummaryViewEd", summaryView());
+	}
+
+	@Test
+	public void testResultDetailViewEd() {
+		callMethod("formLoadMethodService", "resultDetailViewEd", detailView());
+	}
+
+	@Test
+	public void testOverrideResultDetailViewEd() {
+		callMethod("formLoadMethodService", "overrideResultDetailViewEd", detailView());
+	}
+
+	@Test
+	public void testOverrideResultNoViewEd() {
+		callMethod("formLoadMethodService", "overrideResultNoViewEd", noView());
+	}
+
 	@SuppressWarnings("unchecked")
 	private void callMethod(String bean, String method, MapEntry... expectedEntries) {
-		Map<String, Object> result = ControllerUtil.sendAndReceiveMap(mockMvc, bean,
+		Map<String, Object> result = ControllerUtil.sendAndReceiveMap(this.mockMvc, bean,
 				method);
 		assertThat(result).hasSize(2).contains(MapEntry.entry("success", Boolean.TRUE));
 		Map<String, Object> data = (Map<String, Object>) result.get("data");

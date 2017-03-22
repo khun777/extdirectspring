@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.controller;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,10 +37,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import ch.ralscha.extdirectspring.bean.ExtDirectResponse;
 import ch.ralscha.extdirectspring.provider.Row;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -56,7 +56,7 @@ public class RouterControllerFilterTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@BeforeClass
@@ -78,9 +78,9 @@ public class RouterControllerFilterTest {
 
 		int index = 1;
 		for (String json : jsonList) {
-			MvcResult result = ControllerUtil.performRouterRequest(mockMvc, json);
-			List<ExtDirectResponse> responses = ControllerUtil.readDirectResponses(result
-					.getResponse().getContentAsByteArray());
+			MvcResult result = ControllerUtil.performRouterRequest(this.mockMvc, json);
+			List<ExtDirectResponse> responses = ControllerUtil
+					.readDirectResponses(result.getResponse().getContentAsByteArray());
 
 			assertThat(responses).hasSize(1);
 			ExtDirectResponse resp = responses.get(0);

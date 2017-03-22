@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package ch.ralscha.extdirectspring.bean;
 
-import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 
 /**
  * Specifies a Json View (filter) that Jackson uses to serialize the response. A model
@@ -43,7 +43,7 @@ public class JsonViewHint {
 	}
 
 	public Class<?> getJsonView() {
-		return jsonView;
+		return this.jsonView;
 	}
 
 	public void setJsonView(Class<?> jsonView) {

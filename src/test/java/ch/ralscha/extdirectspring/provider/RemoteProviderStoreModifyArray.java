@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.provider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Locale;
@@ -58,7 +58,8 @@ public class RemoteProviderStoreModifyArray {
 	}
 
 	@ExtDirectMethod(value = ExtDirectMethodType.STORE_MODIFY)
-	public Row[] update2(Locale locale, @RequestParam(value = "id") int id, List<Row> rows) {
+	public Row[] update2(Locale locale, @RequestParam(value = "id") int id,
+			List<Row> rows) {
 		assertThat(id).isEqualTo(10);
 		assertThat(locale).isEqualTo(Locale.ENGLISH);
 		return rows.toArray(new Row[rows.size()]);
@@ -75,8 +76,8 @@ public class RemoteProviderStoreModifyArray {
 
 	@ExtDirectMethod(value = ExtDirectMethodType.STORE_MODIFY, group = "group2")
 	public Row[] update4(
-			@RequestParam(value = "id", required = false) Integer id,
-			@RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate yesterday,
+			@RequestParam(value = "id", required = false) Integer id, @RequestParam(
+					required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate yesterday,
 			final List<Row> rows) {
 
 		if (id == null) {

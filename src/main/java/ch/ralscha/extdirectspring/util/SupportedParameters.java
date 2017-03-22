@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import ch.ralscha.extdirectspring.controller.SSEWriter;
+import ch.ralscha.extdirectspring.bean.ExtDirectRequest;
 
 /**
  * Enumeration of all supported parameter types.
  */
 enum SupportedParameters {
 
-	SERVLET_REQUEST(ServletRequest.class), SERVLET_RESPONSE(ServletResponse.class), SESSION(
-			HttpSession.class), LOCALE(Locale.class), PRINCIPAL(Principal.class), SSE_WRITER(
-			SSEWriter.class);
+	SERVLET_REQUEST(ServletRequest.class), SERVLET_RESPONSE(ServletResponse.class),
+	SESSION(HttpSession.class), LOCALE(Locale.class), PRINCIPAL(Principal.class),
+	EXT_DIRECT_REQUEST(ExtDirectRequest.class);
 
 	private final Class<?> clazz;
 
@@ -45,7 +45,7 @@ enum SupportedParameters {
 	 * @return the enclosing class
 	 */
 	public Class<?> getSupportedClass() {
-		return clazz;
+		return this.clazz;
 	}
 
 	/**
@@ -66,13 +66,8 @@ enum SupportedParameters {
 	}
 
 	public static Object resolveParameter(Class<?> parameterType,
-			HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		return resolveParameter(parameterType, request, response, locale, null);
-	}
-
-	public static Object resolveParameter(Class<?> parameterType,
 			HttpServletRequest request, HttpServletResponse response, Locale locale,
-			SSEWriter sseWriter) {
+			ExtDirectRequest extDirectRequest) {
 
 		if (SERVLET_REQUEST.getSupportedClass().isAssignableFrom(parameterType)) {
 			return request;
@@ -89,8 +84,8 @@ enum SupportedParameters {
 		else if (LOCALE.getSupportedClass().equals(parameterType)) {
 			return locale;
 		}
-		else if (SSE_WRITER.getSupportedClass().equals(parameterType)) {
-			return sseWriter;
+		else if (EXT_DIRECT_REQUEST.getSupportedClass().equals(parameterType)) {
+			return extDirectRequest;
 		}
 
 		return null;

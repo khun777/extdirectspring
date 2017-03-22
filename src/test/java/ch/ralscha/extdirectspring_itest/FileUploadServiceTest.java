@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,26 +51,25 @@ public class FileUploadServiceTest extends JettyTest {
 			InputStream is = getClass().getResourceAsStream("/UploadTestFile.txt");
 
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-			ContentBody cbFile = new InputStreamBody(is,
-					ContentType.create("text/plain"), "UploadTestFile.txt");
+			ContentBody cbFile = new InputStreamBody(is, ContentType.create("text/plain"),
+					"UploadTestFile.txt");
 			builder.addPart("fileUpload", cbFile);
 			builder.addPart("extTID", new StringBody("2", ContentType.DEFAULT_TEXT));
-			builder.addPart("extAction", new StringBody("fileUploadService",
-					ContentType.DEFAULT_TEXT));
-			builder.addPart("extMethod", new StringBody("uploadTest",
-					ContentType.DEFAULT_TEXT));
+			builder.addPart("extAction",
+					new StringBody("fileUploadService", ContentType.DEFAULT_TEXT));
+			builder.addPart("extMethod",
+					new StringBody("uploadTest", ContentType.DEFAULT_TEXT));
 			builder.addPart("extType", new StringBody("rpc", ContentType.DEFAULT_TEXT));
-			builder.addPart("extUpload", new StringBody("true", ContentType.DEFAULT_TEXT));
+			builder.addPart("extUpload",
+					new StringBody("true", ContentType.DEFAULT_TEXT));
 
-			builder.addPart(
-					"name",
-					new StringBody("Jimöäü", ContentType.create("text/plain",
-							Charset.forName("UTF-8"))));
+			builder.addPart("name", new StringBody("Jimöäü",
+					ContentType.create("text/plain", Charset.forName("UTF-8"))));
 			builder.addPart("firstName",
 					new StringBody("Ralph", ContentType.DEFAULT_TEXT));
 			builder.addPart("age", new StringBody("25", ContentType.DEFAULT_TEXT));
-			builder.addPart("email", new StringBody("test@test.ch",
-					ContentType.DEFAULT_TEXT));
+			builder.addPart("email",
+					new StringBody("test@test.ch", ContentType.DEFAULT_TEXT));
 
 			post.setEntity(builder.build());
 			response = client.execute(post);

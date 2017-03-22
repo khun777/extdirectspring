@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,13 +46,13 @@ public class ExceptionFormPostServiceTest extends JettyTest {
 
 	@Before
 	public void beforeTest() {
-		client = HttpClientBuilder.create().build();
-		post = new HttpPost("http://localhost:9998/controller/router");
+		this.client = HttpClientBuilder.create().build();
+		this.post = new HttpPost("http://localhost:9998/controller/router");
 	}
 
 	@After
 	public void afterTest() {
-		IOUtils.closeQuietly(client);
+		IOUtils.closeQuietly(this.client);
 	}
 
 	@Test
@@ -67,9 +67,9 @@ public class ExceptionFormPostServiceTest extends JettyTest {
 
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(formparams, "UTF-8");
 
-		post.setEntity(postEntity);
+		this.post.setEntity(postEntity);
 
-		CloseableHttpResponse response = client.execute(post);
+		CloseableHttpResponse response = this.client.execute(this.post);
 		HttpEntity entity = response.getEntity();
 		assertThat(entity).isNotNull();
 		String responseString = EntityUtils.toString(entity);
@@ -102,9 +102,9 @@ public class ExceptionFormPostServiceTest extends JettyTest {
 
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(formparams, "UTF-8");
 
-		post.setEntity(postEntity);
+		this.post.setEntity(postEntity);
 
-		CloseableHttpResponse response = client.execute(post);
+		CloseableHttpResponse response = this.client.execute(this.post);
 		HttpEntity entity = response.getEntity();
 		assertThat(entity).isNotNull();
 		String responseString = EntityUtils.toString(entity);

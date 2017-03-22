@@ -1,7 +1,7 @@
 ##ExtDirectSpring 
-[![Build Status](https://api.travis-ci.org/ralscha/extdirectspring.png)](http://travis-ci.org/ralscha/extdirectspring)
+[![Build Status](https://api.travis-ci.org/ralscha/extdirectspring.png)](https://travis-ci.org/ralscha/extdirectspring)
 
-ExtDirectSpring is a library that connects Ext JS 3.x, Ext JS 4.x and Sencha Touch 2.x applications with a Java/Spring 3 back end, by implementing the [Ext Direct](http://www.sencha.com/products/extjs/extdirect/) specification. 
+ExtDirectSpring is a library that connects Ext JS 3.x, 4.x, 5.x, 6.x and Sencha Touch 2.x applications with a Java/Spring back end, by implementing the [Ext Direct](http://www.sencha.com/products/extjs/extdirect/) specification. 
 The library supports all the features of Ext Direct:
   * Configuration with annotations
   * Simple remote calls
@@ -19,12 +19,9 @@ ExtDirectSpring is available from the Central Maven Repository.
     <dependency>
       <groupId>ch.ralscha</groupId>
       <artifactId>extdirectspring</artifactId>
-      <version>1.4.3</version>
+      <version>1.7.1</version>
     </dependency>
 ```
-
-For a quick start there are archetypes available. 
-See the [Maven Setup](https://github.com/ralscha/extdirectspring/wiki/Setup-Maven#archetypes) wiki page for more information.
 
 
 ##Support
@@ -33,7 +30,21 @@ The official Sencha [Ext.Direct forum](http://www.sencha.com/forum/forumdisplay.
 
 
 ##Minimal Requirements
- * Spring 3.0.7+ (Version 1.1.3), Spring 3.1.2+ (Version 1.2.3), Spring 3.2.1+ (Version 1.3.1), Spring 4.0.0+ (Version 1.4.3)
- * Servlet 2.4+ Container (Version <= 1.3.9), Servlet 3.0+ (Version 1.4.3)
- * Java 1.5 (Version 1.1.3), Java 1.6 (Version 1.2.3, 1.3.1, 1.4.3)
- * Ext JS 3+, Sencha Touch 2 
+  * 1.7.1: Spring 4.3.1, Servlet 3.0, Jackson 2.8, Java 1.6
+  * 1.6.1: Spring 4.2.0, Servlet 3.0, Jackson 2.6, Java 1.6
+  * 1.5.2: Spring 4.1.2, Servlet 3.0, Jackson 2.5, Java 1.6
+  * 1.4.3: Spring 4.0.0, Servlet 3.0, Java 1.6
+  * 1.3.9: Spring 3.2.1, Servlet 2.4, Java 1.6
+  * 1.2.3: Spring 3.1.2, Servlet 2.4, Java 1.6
+  * 1.1.3: Spring 3.0.7, Servlet 2.4, Java 1.5
+
+The library supports Ext JS 3, 4, 5 and 6 and Sencha Touch 2   
+
+
+##Demo applications using extdirectspring
+  * [eds-starter6-simple-jpa](https://github.com/ralscha/eds-starter6-simple-jpa)
+  * [eds-starter6-simple-mongodb](https://github.com/ralscha/eds-starter6-simple-mongodb)
+  * [eds-starter6-jpa](https://github.com/ralscha/eds-starter6-jpa)
+  * [eds-starter6-mongodb](https://github.com/ralscha/eds-starter6-mongodb)
+  * [musicsearch](https://github.com/ralscha/musicsearch)
+  * [mycustomer](https://github.com/ralscha/mycustomer)

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,11 @@ public class JsonHandler {
 	private ObjectMapper mapper;
 
 	public JsonHandler() {
-		mapper = new ObjectMapper();
+		this.mapper = new ObjectMapper();
+	}
+
+	public JsonHandler(ObjectMapper mapper) {
+		this.mapper = mapper;
 	}
 
 	/**
@@ -50,7 +54,7 @@ public class JsonHandler {
 	 * @return the currently assigned {@link ObjectMapper}
 	 */
 	public ObjectMapper getMapper() {
-		return mapper;
+		return this.mapper;
 	}
 
 	/**
@@ -76,9 +80,10 @@ public class JsonHandler {
 	public String writeValueAsString(Object obj, boolean indent) {
 		try {
 			if (indent) {
-				return mapper.writer().withDefaultPrettyPrinter().writeValueAsString(obj);
+				return this.mapper.writer().withDefaultPrettyPrinter()
+						.writeValueAsString(obj);
 			}
-			return mapper.writeValueAsString(obj);
+			return this.mapper.writeValueAsString(obj);
 		}
 		catch (Exception e) {
 			LogFactory.getLog(JsonHandler.class).info("serialize object to json", e);
@@ -99,7 +104,7 @@ public class JsonHandler {
 	@SuppressWarnings("unchecked")
 	public <T> T readValue(String json, TypeReference<T> typeReference) {
 		try {
-			return (T) mapper.readValue(json, typeReference);
+			return (T) this.mapper.readValue(json, typeReference);
 		}
 		catch (Exception e) {
 			LogFactory.getLog(JsonHandler.class).info("deserialize json to object", e);
@@ -118,7 +123,7 @@ public class JsonHandler {
 	 */
 	public <T> T readValue(String json, Class<T> clazz) {
 		try {
-			return mapper.readValue(json, clazz);
+			return this.mapper.readValue(json, clazz);
 		}
 		catch (Exception e) {
 			LogFactory.getLog(JsonHandler.class).info("deserialize json to object", e);
@@ -136,7 +141,7 @@ public class JsonHandler {
 	 */
 	public Object readValue(InputStream is, Class<Object> clazz) {
 		try {
-			return mapper.readValue(is, clazz);
+			return this.mapper.readValue(is, clazz);
 		}
 		catch (Exception e) {
 			LogFactory.getLog(JsonHandler.class).info("deserialize json to object", e);
@@ -152,7 +157,7 @@ public class JsonHandler {
 	 * @return the converted object
 	 */
 	public <T> T convertValue(Object object, Class<T> clazz) {
-		return mapper.convertValue(object, clazz);
+		return this.mapper.convertValue(object, clazz);
 	}
 
 	/**
@@ -163,6 +168,6 @@ public class JsonHandler {
 	 * @return the converted object
 	 */
 	public <T> T convertValue(Object object, JavaType toValueTypeRef) {
-		return mapper.convertValue(object, toValueTypeRef);
+		return this.mapper.convertValue(object, toValueTypeRef);
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,15 @@ public @interface ExtDirectMethod {
 	String group() default "";
 
 	/**
+	 * (Optional) <br>
+	 * false: always send requests immediately for this method<br>
+	 * true (default): allow requests to this method to be part of a batched request
+	 * <p>
+	 * Not feasible for POLL and FORM_POST methods.
+	 */
+	boolean batched() default true;
+
+	/**
 	 * (Optional) Only feasible for POLL methods. The name of the event this method is
 	 * sending messages to. If this parameter is empty the name of the method will be used
 	 * as event name.
@@ -83,7 +92,7 @@ public @interface ExtDirectMethod {
 
 	/**
 	 * (Optional) Specifies a JSON View (filter) that Jackson uses to serialize the
-	 * response. Not supported for SSE and FORM_POST methods.
+	 * response. Not supported for FORM_POST methods.
 	 */
 	Class<?> jsonView() default NoJsonView.class;
 

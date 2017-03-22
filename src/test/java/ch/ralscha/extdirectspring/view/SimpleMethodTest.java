@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,14 @@
  */
 package ch.ralscha.extdirectspring.view;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import org.fest.assertions.data.MapEntry;
+import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import ch.ralscha.extdirectspring.bean.BeanMethod;
 import ch.ralscha.extdirectspring.controller.ControllerUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -45,13 +49,12 @@ public class SimpleMethodTest extends BaseViewTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
 	public void testNoView() {
 		callMethod("simpleMethodService", "noView", noView());
-
 	}
 
 	@Test
@@ -104,8 +107,59 @@ public class SimpleMethodTest extends BaseViewTest {
 		callMethod("simpleMethodService", "overrideSubclassNoView", noView());
 	}
 
+	@Test
+	public void testMultiple1() {
+		List<BeanMethod> bms = new ArrayList<BeanMethod>();
+		bms.add(new BeanMethod("simpleMethodService", "noView"));
+		List<Map<String, Object>> results = ControllerUtil
+				.sendAndReceiveMultiple(this.mockMvc, bms);
+		assertThat(results).hasSize(1);
+		Map<String, Object> result = results.get(0);
+		assertThat(result).hasSize(noView().length);
+		assertThat(result).contains(noView());
+	}
+
+	@Test
+	public void testMultiple2() {
+		List<BeanMethod> bms = new ArrayList<BeanMethod>();
+		bms.add(new BeanMethod("simpleMethodService", "noView"));
+		bms.add(new BeanMethod("simpleMethodService", "annotationSummaryView"));
+		bms.add(new BeanMethod("simpleMethodService", "annotationDetailView"));
+		List<Map<String, Object>> results = ControllerUtil
+				.sendAndReceiveMultiple(this.mockMvc, bms);
+		assertThat(results).hasSize(3);
+
+		int ix = 0;
+		for (MapEntry[] entries : Arrays.asList(noView(), summaryView(), detailView())) {
+			Map<String, Object> result = results.get(ix++);
+			assertThat(result).hasSize(entries.length);
+			assertThat(result).contains(entries);
+		}
+	}
+
+	@Test
+	public void testMultiple3() {
+		List<BeanMethod> bms = new ArrayList<BeanMethod>();
+		bms.add(new BeanMethod("simpleMethodService", "subclassSummaryView"));
+		bms.add(new BeanMethod("simpleMethodService", "subclassDetailView"));
+		bms.add(new BeanMethod("simpleMethodService", "noView"));
+		bms.add(new BeanMethod("simpleMethodService", "overrideSubclassDetailView"));
+		bms.add(new BeanMethod("simpleMethodService", "overrideSubclassNoView"));
+		List<Map<String, Object>> results = ControllerUtil
+				.sendAndReceiveMultiple(this.mockMvc, bms);
+		assertThat(results).hasSize(5);
+
+		int ix = 0;
+		for (MapEntry[] entries : Arrays.asList(summaryView(), detailView(), noView(),
+				detailView(), noView())) {
+			Map<String, Object> result = results.get(ix++);
+			assertThat(result).hasSize(entries.length);
+			assertThat(result).contains(entries);
+		}
+	}
+
 	private void callMethod(String bean, String method, MapEntry... expectedEntries) {
-		Map<String, Object> result = ControllerUtil.sendAndReceiveMap(mockMvc, bean,
+		Map<String, Object> result = ControllerUtil.sendAndReceiveMap(this.mockMvc, bean,
 				method);
 		assertThat(result).hasSize(expectedEntries.length);
 		assertThat(result).contains(expectedEntries);

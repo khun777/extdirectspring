@@ -1,9 +1,13 @@
+sudo: false
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
 language: java
 
 jdk:
   - oraclejdk8
-  - oraclejdk7
-  - openjdk6  
 
 env:
   global:
@@ -13,3 +17,7 @@ env:
 after_success:
 - python addsettings.py
 - mvn clean deploy -DskipTests=true --settings ~/.m2/mySettings.xml
+
+cache:
+  directories:
+  - $HOME/.m2

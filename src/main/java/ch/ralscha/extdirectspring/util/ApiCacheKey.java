@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ public final class ApiCacheKey {
 
 	private final String pollingUrlsVar;
 
-	private final String sseVar;
-
 	private final String group;
 
 	private final String routerUrl;
@@ -36,13 +34,11 @@ public final class ApiCacheKey {
 	private final boolean debug;
 
 	public ApiCacheKey(String apiNs, String actionNs, String remotingApiVar,
-			String pollingUrlsVar, String sseVar, String group, String routerUrl,
-			boolean debug) {
+			String pollingUrlsVar, String group, String routerUrl, boolean debug) {
 		this.apiNs = apiNs;
 		this.actionNs = actionNs;
 		this.remotingApiVar = remotingApiVar;
 		this.pollingUrlsVar = pollingUrlsVar;
-		this.sseVar = sseVar;
 		this.group = group;
 		this.routerUrl = routerUrl;
 		this.debug = debug;
@@ -55,20 +51,20 @@ public final class ApiCacheKey {
 		}
 
 		ApiCacheKey other = (ApiCacheKey) o;
-		return ExtDirectSpringUtil.equal(apiNs, other.apiNs)
-				&& ExtDirectSpringUtil.equal(actionNs, other.actionNs)
-				&& ExtDirectSpringUtil.equal(remotingApiVar, other.remotingApiVar)
-				&& ExtDirectSpringUtil.equal(pollingUrlsVar, other.pollingUrlsVar)
-				&& ExtDirectSpringUtil.equal(sseVar, other.sseVar)
-				&& ExtDirectSpringUtil.equal(group, other.group)
-				&& ExtDirectSpringUtil.equal(routerUrl, other.routerUrl)
-				&& ExtDirectSpringUtil.equal(debug, other.debug);
+		return ExtDirectSpringUtil.equal(this.apiNs, other.apiNs)
+				&& ExtDirectSpringUtil.equal(this.actionNs, other.actionNs)
+				&& ExtDirectSpringUtil.equal(this.remotingApiVar, other.remotingApiVar)
+				&& ExtDirectSpringUtil.equal(this.pollingUrlsVar, other.pollingUrlsVar)
+				&& ExtDirectSpringUtil.equal(this.group, other.group)
+				&& ExtDirectSpringUtil.equal(this.routerUrl, other.routerUrl)
+				&& ExtDirectSpringUtil.equal(this.debug, other.debug);
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(new Object[] { apiNs, actionNs, remotingApiVar,
-				pollingUrlsVar, sseVar, routerUrl, group, debug });
+		return Arrays
+				.hashCode(new Object[] { this.apiNs, this.actionNs, this.remotingApiVar,
+						this.pollingUrlsVar, this.routerUrl, this.group, this.debug });
 	}
 
 }

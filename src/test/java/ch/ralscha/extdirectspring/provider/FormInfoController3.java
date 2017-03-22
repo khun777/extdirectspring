@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethod;
 import ch.ralscha.extdirectspring.annotation.ExtDirectMethodType;
+import ch.ralscha.extdirectspring.bean.EdFormPostResult;
 import ch.ralscha.extdirectspring.bean.ExtDirectFormPostResult;
 
 @Controller
@@ -48,9 +49,10 @@ public class FormInfoController3 {
 
 	@SuppressWarnings("unused")
 	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST_JSON)
-	public ExtDirectFormPostResult updateInfoJsonDirect(Locale locale, @RequestParam(
-			value = "p1", required = true) Long param1, @RequestParam(value = "p2",
-			required = true) String param2, @Valid FormInfo formInfo) {
+	public ExtDirectFormPostResult updateInfoJsonDirect(Locale locale,
+			@RequestParam(value = "p1", required = true) Long param1,
+			@RequestParam(value = "p2", required = true) String param2,
+			@Valid FormInfo formInfo) {
 
 		ExtDirectFormPostResult e = new ExtDirectFormPostResult();
 		e.addResultProperty("name", formInfo.getName().toUpperCase());
@@ -72,6 +74,41 @@ public class FormInfoController3 {
 		ExtDirectFormPostResult e = new ExtDirectFormPostResult();
 		e.addError("age", "age is wrong");
 		return e;
+	}
+
+	@SuppressWarnings("unused")
+	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST_JSON)
+	@RequestMapping(value = "/updateInfoJsonEd", method = RequestMethod.POST)
+	public EdFormPostResult updateInfoJsonEd(Locale locale, HttpServletRequest request,
+			HttpServletResponse response, @Valid FormInfo formInfo) {
+		return EdFormPostResult.success();
+	}
+
+	@SuppressWarnings("unused")
+	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST_JSON)
+	public EdFormPostResult updateInfoJsonDirectEd(Locale locale,
+			@RequestParam(value = "p1", required = true) Long param1,
+			@RequestParam(value = "p2", required = true) String param2,
+			@Valid FormInfo formInfo) {
+
+		EdFormPostResult.Builder e = EdFormPostResult.builder();
+		e.putResult("name", formInfo.getName().toUpperCase());
+		e.putResult("age", formInfo.getAge() + 10);
+		e.putResult("admin", !formInfo.isAdmin());
+		BigDecimal bd = new BigDecimal("1000");
+		bd = bd.add(formInfo.getSalary());
+		e.putResult("salary", bd);
+		e.putResult("result", formInfo.getResult() + "RESULT");
+		e.success();
+		return e.build();
+	}
+
+	@SuppressWarnings("unused")
+	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST_JSON)
+	public EdFormPostResult updateInfoJsonDirectErrorEd(Locale locale,
+			HttpServletRequest request, HttpServletResponse response,
+			@Valid FormInfo formInfo) {
+		return EdFormPostResult.builder().addError("age", "age is wrong").build();
 	}
 
 	@SuppressWarnings("unused")

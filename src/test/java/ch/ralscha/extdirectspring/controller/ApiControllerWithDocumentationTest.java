@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package ch.ralscha.extdirectspring.controller;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.data.MapEntry.entry;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.MapEntry.entry;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,17 +63,17 @@ public class ApiControllerWithDocumentationTest {
 
 	@Before
 	public void setupApiController() throws Exception {
-		apiCache.clear();
+		this.apiCache.clear();
 
 		Configuration config = new Configuration();
 		config.setTimeout(15000);
 		config.setEnableBuffer(Boolean.FALSE);
 		config.setMaxRetries(5);
 		config.setStreamResponse(true);
-		ReflectionTestUtils.setField(configurationService, "configuration", config);
-		configurationService.afterPropertiesSet();
+		ReflectionTestUtils.setField(this.configurationService, "configuration", config);
+		this.configurationService.afterPropertiesSet();
 
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	/**
@@ -89,8 +89,8 @@ public class ApiControllerWithDocumentationTest {
 		ActionDoc doc = callApi("method1");
 
 		assertThat(doc.isDeprecated()).isTrue();
-		assertThat(doc.getMethodComment()).isEqualTo(
-				"this method is used to test the documentation generation");
+		assertThat(doc.getMethodComment())
+				.isEqualTo("this method is used to test the documentation generation");
 		assertThat(doc.getAuthor()).isEqualTo("dbs");
 		assertThat(doc.getVersion()).isEqualTo("0.1");
 		assertThat(doc.getParameters()).hasSize(5);
@@ -255,14 +255,14 @@ public class ApiControllerWithDocumentationTest {
 	private void doRequestWithoutDocs(String url) throws Exception {
 		ApiRequestParams params = ApiRequestParams.builder().apiNs("Ext.ns")
 				.actionNs("actionns").group("doc")
-				.configuration(configurationService.getConfiguration()).build();
+				.configuration(this.configurationService.getConfiguration()).build();
 		MockHttpServletRequestBuilder request = get(url).accept(MediaType.ALL)
 				.characterEncoding("UTF-8");
 		request.param("apiNs", params.getApiNs());
 		request.param("actionNs", params.getActionNs());
 		request.param("group", params.getGroup());
 
-		MvcResult result = mockMvc.perform(request).andExpect(status().isOk())
+		MvcResult result = this.mockMvc.perform(request).andExpect(status().isOk())
 				.andExpect(content().contentType("application/javascript")).andReturn();
 
 		ApiControllerTest.compare(result, ApiControllerTest.groupApisWithDoc("actionns"),
@@ -274,14 +274,14 @@ public class ApiControllerWithDocumentationTest {
 	private ActionDoc callApi(String method) throws Exception {
 		ApiRequestParams params = ApiRequestParams.builder().apiNs("Ext.ns")
 				.actionNs("actionns").group("doc")
-				.configuration(configurationService.getConfiguration()).build();
-		MockHttpServletRequestBuilder request = get("/api-debug-doc.js").accept(
-				MediaType.ALL).characterEncoding("UTF-8");
+				.configuration(this.configurationService.getConfiguration()).build();
+		MockHttpServletRequestBuilder request = get("/api-debug-doc.js")
+				.accept(MediaType.ALL).characterEncoding("UTF-8");
 		request.param("apiNs", params.getApiNs());
 		request.param("actionNs", params.getActionNs());
 		request.param("group", params.getGroup());
 
-		MvcResult result = mockMvc.perform(request).andExpect(status().isOk())
+		MvcResult result = this.mockMvc.perform(request).andExpect(status().isOk())
 				.andExpect(content().contentType("application/javascript")).andReturn();
 
 		ApiControllerTest.compare(result, ApiControllerTest.groupApisWithDoc("actionns"),
@@ -295,7 +295,7 @@ public class ApiControllerWithDocumentationTest {
 			Pattern.MULTILINE);
 
 	private static ActionDoc getCommentForMethod(String apiString, String method) {
-		ActionDoc doc = new ActionDoc(method, Collections.<String> emptyList());
+		ActionDoc doc = new ActionDoc(method, Collections.<String>emptyList());
 
 		String block = findCommentBlock(apiString, method);
 		if (block != null) {
@@ -313,8 +313,8 @@ public class ApiControllerWithDocumentationTest {
 
 			p = block.indexOf(method);
 			if (p != -1) {
-				doc.setMethodComment(block.substring(p + method.length() + 2,
-						block.indexOf('\n', p)));
+				doc.setMethodComment(
+						block.substring(p + method.length() + 2, block.indexOf('\n', p)));
 			}
 
 			Map<String, String> params = new HashMap<String, String>();

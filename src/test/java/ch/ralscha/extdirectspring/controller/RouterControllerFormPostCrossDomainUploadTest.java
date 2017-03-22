@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.controller;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +53,7 @@ public class RouterControllerFormPostCrossDomainUploadTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class RouterControllerFormPostCrossDomainUploadTest {
 
 		request.file("fileUpload", "the content of the file".getBytes());
 
-		MvcResult resultMvc = mockMvc.perform(request).andExpect(status().isOk())
+		MvcResult resultMvc = this.mockMvc.perform(request).andExpect(status().isOk())
 				.andExpect(content().contentType("text/html;charset=UTF-8"))
 				.andExpect(content().encoding("UTF-8")).andReturn();
 
@@ -80,8 +80,8 @@ public class RouterControllerFormPostCrossDomainUploadTest {
 		assertThat(response).startsWith(prefix).endsWith(suffix);
 		String json = response.substring(prefix.length(), response.indexOf(suffix));
 
-		ExtDirectResponse edsResponse = ControllerUtil.readDirectResponse(json
-				.getBytes(ExtDirectSpringUtil.UTF8_CHARSET));
+		ExtDirectResponse edsResponse = ControllerUtil
+				.readDirectResponse(json.getBytes(ExtDirectSpringUtil.UTF8_CHARSET));
 
 		assertThat(edsResponse.getType()).isEqualTo("rpc");
 		assertThat(edsResponse.getMessage()).isNull();
@@ -89,5 +89,40 @@ public class RouterControllerFormPostCrossDomainUploadTest {
 		assertThat(edsResponse.getTid()).isEqualTo(1);
 		assertThat(edsResponse.getAction()).isEqualTo("uploadService");
 		assertThat(edsResponse.getMethod()).isEqualTo("upload");
+	}
+
+	@Test
+	public void testUploadEd() throws Exception {
+		MockMultipartHttpServletRequestBuilder request = fileUpload("/router");
+		request.accept(MediaType.ALL).characterEncoding("UTF-8")
+				.session(new MockHttpSession());
+
+		request.param("extTID", "1");
+		request.param("extAction", "uploadService");
+		request.param("extMethod", "uploadEd");
+		request.param("extType", "rpc");
+		request.param("result", "theResult");
+
+		request.file("fileUpload", "the content of the file".getBytes());
+
+		MvcResult resultMvc = this.mockMvc.perform(request).andExpect(status().isOk())
+				.andExpect(content().contentType("text/html;charset=UTF-8"))
+				.andExpect(content().encoding("UTF-8")).andReturn();
+
+		String response = resultMvc.getResponse().getContentAsString();
+		String prefix = "<html><body><textarea>";
+		String suffix = "</textarea><script type=\"text/javascript\">document.domain = 'rootdomain.com';</script></body></html>";
+		assertThat(response).startsWith(prefix).endsWith(suffix);
+		String json = response.substring(prefix.length(), response.indexOf(suffix));
+
+		ExtDirectResponse edsResponse = ControllerUtil
+				.readDirectResponse(json.getBytes(ExtDirectSpringUtil.UTF8_CHARSET));
+
+		assertThat(edsResponse.getType()).isEqualTo("rpc");
+		assertThat(edsResponse.getMessage()).isNull();
+		assertThat(edsResponse.getWhere()).isNull();
+		assertThat(edsResponse.getTid()).isEqualTo(1);
+		assertThat(edsResponse.getAction()).isEqualTo("uploadService");
+		assertThat(edsResponse.getMethod()).isEqualTo("uploadEd");
 	}
 }

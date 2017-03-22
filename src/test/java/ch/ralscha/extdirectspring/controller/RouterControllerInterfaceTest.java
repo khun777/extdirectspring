@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring.controller;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -35,9 +35,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import ch.ralscha.extdirectspring.provider.Row;
-
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import ch.ralscha.extdirectspring.provider.Row;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -56,19 +56,19 @@ public class RouterControllerInterfaceTest {
 
 	@Before
 	public void setupMockMvc() throws Exception {
-		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 	}
 
 	@Test
 	public void testNoParameters() {
-		ControllerUtil.sendAndReceive(mockMvc, "remoteProviderImplementation", "method2",
-				"method2() called");
+		ControllerUtil.sendAndReceive(this.mockMvc, "remoteProviderImplementation",
+				"method2", "method2() called");
 	}
 
 	@Test
 	public void testNoParameterAnnotation() {
-		ControllerUtil.sendAndReceive(mockMvc, "remoteProviderImplementation", "method3",
-				"method3() called-21-3.1-aString2", 21, 3.1, "aString2");
+		ControllerUtil.sendAndReceive(this.mockMvc, "remoteProviderImplementation",
+				"method3", "method3() called-21-3.1-aString2", 21, 3.1, "aString2");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -79,7 +79,7 @@ public class RouterControllerInterfaceTest {
 		readRequest.put("lastName", "Smith");
 		readRequest.put("active", Boolean.TRUE);
 
-		List<Row> rows = (List<Row>) ControllerUtil.sendAndReceive(mockMvc,
+		List<Row> rows = (List<Row>) ControllerUtil.sendAndReceive(this.mockMvc,
 				"remoteProviderImplementation", "storeRead",
 				new TypeReference<List<Row>>() {/* nothing_here */
 				}, readRequest);

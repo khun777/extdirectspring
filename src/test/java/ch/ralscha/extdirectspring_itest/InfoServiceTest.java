@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.data.MapEntry.entry;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.MapEntry.entry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,34 +35,36 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.fest.assertions.data.MapEntry;
+import org.assertj.core.data.MapEntry;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.ralscha.extdirectspring.bean.api.Action;
 import ch.ralscha.extdirectspring.bean.api.RemotingApi;
 import ch.ralscha.extdirectspring.controller.ApiControllerTest;
 import ch.ralscha.extdirectspring.controller.ApiRequestParams;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class InfoServiceTest extends JettyTest {
 
 	private static RemotingApi api() {
 		RemotingApi remotingApi = new RemotingApi("remoting", "/controller/router", null);
-		remotingApi.addAction("infoService", new Action("updateInfo", 0, Boolean.TRUE));
-		remotingApi
-				.addAction("infoService", new Action("updateInfo2nd", 0, Boolean.TRUE));
+		remotingApi.addAction("infoService", Action.createFormHandler("updateInfo", 0));
+		remotingApi.addAction("infoService",
+				Action.createFormHandler("updateInfo2nd", 0));
 
-		remotingApi.addAction("infoService", new Action("updateInfoUser1", 0,
-				Boolean.TRUE));
-		remotingApi.addAction("infoService", new Action("updateInfoUser2", 0,
-				Boolean.TRUE));
-		remotingApi.addAction("infoService", new Action("updateInfoUser3", 0,
-				Boolean.TRUE));
-		remotingApi.addAction("infoService", new Action("updateInfoUser4", 0,
-				Boolean.TRUE));
-		remotingApi.addAction("infoService", new Action("updateInfoUser5", 0,
-				Boolean.TRUE));
+		remotingApi.addAction("infoService",
+				Action.createFormHandler("updateInfoUser1", 0));
+		remotingApi.addAction("infoService",
+				Action.createFormHandler("updateInfoUser2", 0));
+		remotingApi.addAction("infoService",
+				Action.createFormHandler("updateInfoUser3", 0));
+		remotingApi.addAction("infoService",
+				Action.createFormHandler("updateInfoUser4", 0));
+		remotingApi.addAction("infoService",
+				Action.createFormHandler("updateInfoUser5", 0));
+
+		remotingApi.sort();
 
 		return remotingApi;
 	}
@@ -224,8 +226,8 @@ public class InfoServiceTest extends JettyTest {
 			Map<String, Object> errors = (Map<String, Object>) result.get("errors");
 			if (errorMsg != null) {
 				assertThat(errors).isNotNull();
-				assertThat(((List<String>) errors.get("email")).get(0)).isEqualTo(
-						errorMsg);
+				assertThat(((List<String>) errors.get("email")).get(0))
+						.isEqualTo(errorMsg);
 			}
 			else {
 				assertThat(errors).isNull();

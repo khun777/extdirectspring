@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,14 +45,16 @@ public class RemoteProviderSimpleDoc {
 		return "nothing here";
 	}
 
-	@ExtDirectMethod(group = "doc", documentation = @ExtDirectMethodDocumentation(
-			value = "method three doc", author = "dbs"))
+	@ExtDirectMethod(group = "doc",
+			documentation = @ExtDirectMethodDocumentation(value = "method three doc",
+					author = "dbs"))
 	public String method3() {
 		return "nothing here";
 	}
 
-	@ExtDirectMethod(group = "doc", documentation = @ExtDirectMethodDocumentation(
-			value = "method four doc", author = "sr", version = "0.4"))
+	@ExtDirectMethod(group = "doc",
+			documentation = @ExtDirectMethodDocumentation(value = "method four doc",
+					author = "sr", version = "0.4"))
 	public String method4() {
 		return "nothing here";
 	}
@@ -64,32 +66,36 @@ public class RemoteProviderSimpleDoc {
 		return "nothing here";
 	}
 
-	@ExtDirectMethod(group = "doc", documentation = @ExtDirectMethodDocumentation(
-			value = "method six doc", author = "sr", version = "0.6", deprecated = false))
+	@ExtDirectMethod(group = "doc",
+			documentation = @ExtDirectMethodDocumentation(value = "method six doc",
+					author = "sr", version = "0.6", deprecated = false))
 	public String method6() {
 		return "nothing here";
 	}
 
-	@ExtDirectMethod(group = "doc", documentation = @ExtDirectMethodDocumentation(
-			value = "method seven doc", author = "sr", version = "0.7",
-			deprecated = true, returnMethod = @ExtDirectDocReturn(properties = "p1",
-					descriptions = "p1 desc")))
+	@ExtDirectMethod(group = "doc",
+			documentation = @ExtDirectMethodDocumentation(value = "method seven doc",
+					author = "sr", version = "0.7", deprecated = true,
+					returnMethod = @ExtDirectDocReturn(properties = "p1",
+							descriptions = "p1 desc")))
 	public String method7() {
 		return "nothing here";
 	}
 
-	@ExtDirectMethod(group = "doc", documentation = @ExtDirectMethodDocumentation(
-			value = "method eight doc", author = "sr", version = "0.8",
-			deprecated = false, returnMethod = @ExtDirectDocReturn(properties = { "p1",
-					"p2" }, descriptions = { "p1 desc", "p2 desc" })))
+	@ExtDirectMethod(group = "doc",
+			documentation = @ExtDirectMethodDocumentation(value = "method eight doc",
+					author = "sr", version = "0.8", deprecated = false,
+					returnMethod = @ExtDirectDocReturn(properties = { "p1", "p2" },
+							descriptions = { "p1 desc", "p2 desc" })))
 	public String method8() {
 		return "nothing here";
 	}
 
-	@ExtDirectMethod(group = "doc", documentation = @ExtDirectMethodDocumentation(
-			value = "method nine doc", author = "dbs", version = "0.9",
-			returnMethod = @ExtDirectDocReturn(properties = { "p1" }, descriptions = {
-					"p1 desc", "p2 desc" })))
+	@ExtDirectMethod(group = "doc",
+			documentation = @ExtDirectMethodDocumentation(value = "method nine doc",
+					author = "dbs", version = "0.9",
+					returnMethod = @ExtDirectDocReturn(properties = { "p1" },
+							descriptions = { "p1 desc", "p2 desc" })))
 	public String method9() {
 		return "nothing here";
 	}
@@ -103,9 +109,10 @@ public class RemoteProviderSimpleDoc {
 		return "nothing here";
 	}
 
-	@ExtDirectMethod(group = "doc", documentation = @ExtDirectMethodDocumentation(
-			value = "method eleven doc", parameters = @ExtDirectDocParameters(params = {
-					"a", "b" }, descriptions = { "a desc", "b desc" })))
+	@ExtDirectMethod(group = "doc",
+			documentation = @ExtDirectMethodDocumentation(value = "method eleven doc",
+					parameters = @ExtDirectDocParameters(params = { "a", "b" },
+							descriptions = { "a desc", "b desc" })))
 	public String method11() {
 		return "nothing here";
 	}

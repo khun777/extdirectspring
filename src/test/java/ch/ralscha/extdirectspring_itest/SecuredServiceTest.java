@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.Map;
@@ -38,8 +38,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SecuredServiceTest extends JettyTest {
 
 	@Test
-	public void callSetDate() throws IOException, JsonParseException,
-			JsonMappingException {
+	public void callSetDate()
+			throws IOException, JsonParseException, JsonMappingException {
 
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
@@ -79,8 +79,8 @@ public class SecuredServiceTest extends JettyTest {
 	}
 
 	@Test
-	public void callSecretNotLoggedIn() throws IOException, JsonParseException,
-			JsonMappingException {
+	public void callSecretNotLoggedIn()
+			throws IOException, JsonParseException, JsonMappingException {
 
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
@@ -120,8 +120,8 @@ public class SecuredServiceTest extends JettyTest {
 	}
 
 	@Test
-	public void callSecretLoggedIn() throws IOException, JsonParseException,
-			JsonMappingException {
+	public void callSecretLoggedIn()
+			throws IOException, JsonParseException, JsonMappingException {
 
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;

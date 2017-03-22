@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,91 +52,93 @@ public class ConfigurationService implements InitializingBean, DisposableBean {
 	@Override
 	public void afterPropertiesSet() {
 
-		if (configuration == null) {
-			configuration = new Configuration();
+		if (this.configuration == null) {
+			this.configuration = new Configuration();
 		}
 
-		if (configuration.getJsonHandler() != null) {
-			jsonHandler = configuration.getJsonHandler();
+		if (this.configuration.getJsonHandler() != null) {
+			this.jsonHandler = this.configuration.getJsonHandler();
 		}
 
-		if (jsonHandler == null) {
-			jsonHandler = new JsonHandler();
+		if (this.jsonHandler == null) {
+			this.jsonHandler = new JsonHandler();
 		}
 
-		if (routerExceptionHandler == null) {
-			routerExceptionHandler = new DefaultRouterExceptionHandler(this);
+		if (this.routerExceptionHandler == null) {
+			this.routerExceptionHandler = new DefaultRouterExceptionHandler(this);
 		}
 
-		if (configuration.getBatchedMethodsExecutionPolicy() == BatchedMethodsExecutionPolicy.CONCURRENT
-				&& configuration.getBatchedMethodsExecutorService() == null) {
-			configuration.setBatchedMethodsExecutorService(Executors
-					.newFixedThreadPool(5));
+		if (this.configuration
+				.getBatchedMethodsExecutionPolicy() == BatchedMethodsExecutionPolicy.CONCURRENT
+				&& this.configuration.getBatchedMethodsExecutorService() == null) {
+			this.configuration
+					.setBatchedMethodsExecutorService(Executors.newFixedThreadPool(5));
 		}
 
-		if (configuration.getConversionService() == null) {
-			Map<String, ConversionService> conversionServices = context
+		if (this.configuration.getConversionService() == null) {
+			Map<String, ConversionService> conversionServices = this.context
 					.getBeansOfType(ConversionService.class);
 			if (conversionServices.isEmpty()) {
-				configuration
+				this.configuration
 						.setConversionService(new DefaultFormattingConversionService());
 			}
 			else if (conversionServices.size() == 1) {
-				configuration.setConversionService(conversionServices.values().iterator()
-						.next());
+				this.configuration.setConversionService(
+						conversionServices.values().iterator().next());
 			}
 			else {
 				if (conversionServices.containsKey("mvcConversionService")) {
-					configuration.setConversionService(conversionServices
-							.get("mvcConversionService"));
+					this.configuration.setConversionService(
+							conversionServices.get("mvcConversionService"));
 				}
 				else {
 					for (ConversionService conversionService : conversionServices
 							.values()) {
 						if (conversionService instanceof FormattingConversionService) {
-							configuration.setConversionService(conversionService);
+							this.configuration.setConversionService(conversionService);
 							break;
 						}
 					}
-					if (configuration.getConversionService() == null) {
-						configuration.setConversionService(conversionServices.values()
-								.iterator().next());
+					if (this.configuration.getConversionService() == null) {
+						this.configuration.setConversionService(
+								conversionServices.values().iterator().next());
 					}
 				}
 			}
 		}
 
-		Collection<WebArgumentResolver> webResolvers = context.getBeansOfType(
-				WebArgumentResolver.class).values();
-		parametersResolver = new ParametersResolver(configuration.getConversionService(),
-				jsonHandler, webResolvers);
+		Collection<WebArgumentResolver> webResolvers = this.context
+				.getBeansOfType(WebArgumentResolver.class).values();
+		this.parametersResolver = new ParametersResolver(
+				this.configuration.getConversionService(), this.jsonHandler,
+				webResolvers);
 	}
 
 	@Override
 	public void destroy() throws Exception {
-		if (configuration.getBatchedMethodsExecutorService() != null) {
-			configuration.getBatchedMethodsExecutorService().shutdown();
+		if (this.configuration.getBatchedMethodsExecutorService() != null) {
+			this.configuration.getBatchedMethodsExecutorService().shutdown();
 		}
 	}
 
 	public Configuration getConfiguration() {
-		return configuration;
+		return this.configuration;
 	}
 
 	public JsonHandler getJsonHandler() {
-		return jsonHandler;
+		return this.jsonHandler;
 	}
 
 	public ApplicationContext getApplicationContext() {
-		return context;
+		return this.context;
 	}
 
 	public ParametersResolver getParametersResolver() {
-		return parametersResolver;
+		return this.parametersResolver;
 	}
 
 	public RouterExceptionHandler getRouterExceptionHandler() {
-		return routerExceptionHandler;
+		return this.routerExceptionHandler;
 	}
 
 }

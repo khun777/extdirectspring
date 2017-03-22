@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,13 +50,13 @@ public class UserInitBinderServiceTest extends JettyTest {
 
 	@Before
 	public void beforeTest() {
-		client = HttpClientBuilder.create().build();
-		post = new HttpPost("http://localhost:9998/controller/router");
+		this.client = HttpClientBuilder.create().build();
+		this.post = new HttpPost("http://localhost:9998/controller/router");
 	}
 
 	@After
 	public void afterTest() {
-		IOUtils.closeQuietly(client);
+		IOUtils.closeQuietly(this.client);
 	}
 
 	@Test
@@ -77,15 +77,16 @@ public class UserInitBinderServiceTest extends JettyTest {
 		formparams.add(new BasicNameValuePair("dateOfBirth", ""));
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(formparams, "UTF-8");
 
-		post.setEntity(postEntity);
+		this.post.setEntity(postEntity);
 
-		CloseableHttpResponse response = client.execute(post);
+		CloseableHttpResponse response = this.client.execute(this.post);
 		try {
 			HttpEntity entity = response.getEntity();
 			assertThat(entity).isNotNull();
 			String responseString = EntityUtils.toString(entity);
 
-			Map<String, Object> rootAsMap = mapper.readValue(responseString, Map.class);
+			Map<String, Object> rootAsMap = this.mapper.readValue(responseString,
+					Map.class);
 			assertThat(rootAsMap).hasSize(5);
 			assertThat(rootAsMap.get("method")).isEqualTo("updateUser");
 			assertThat(rootAsMap.get("type")).isEqualTo("rpc");
@@ -125,15 +126,16 @@ public class UserInitBinderServiceTest extends JettyTest {
 		formparams.add(new BasicNameValuePair("dateOfBirth", "21.12.1966"));
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(formparams, "UTF-8");
 
-		post.setEntity(postEntity);
+		this.post.setEntity(postEntity);
 
-		CloseableHttpResponse response = client.execute(post);
+		CloseableHttpResponse response = this.client.execute(this.post);
 		try {
 			HttpEntity entity = response.getEntity();
 			assertThat(entity).isNotNull();
 			String responseString = EntityUtils.toString(entity);
 
-			Map<String, Object> rootAsMap = mapper.readValue(responseString, Map.class);
+			Map<String, Object> rootAsMap = this.mapper.readValue(responseString,
+					Map.class);
 			assertThat(rootAsMap).hasSize(5);
 			assertThat(rootAsMap.get("method")).isEqualTo("updateUser");
 			assertThat(rootAsMap.get("type")).isEqualTo("rpc");

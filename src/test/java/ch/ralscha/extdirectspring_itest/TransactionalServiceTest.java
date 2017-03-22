@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.Map;
@@ -37,8 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TransactionalServiceTest extends JettyTest {
 
 	@Test
-	public void callClassbasedProxy() throws IOException, JsonParseException,
-			JsonMappingException {
+	public void callClassbasedProxy()
+			throws IOException, JsonParseException, JsonMappingException {
 
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
@@ -78,8 +78,8 @@ public class TransactionalServiceTest extends JettyTest {
 	}
 
 	@Test
-	public void callInterfacebasedProxy() throws IOException, JsonParseException,
-			JsonMappingException {
+	public void callInterfacebasedProxy()
+			throws IOException, JsonParseException, JsonMappingException {
 
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;

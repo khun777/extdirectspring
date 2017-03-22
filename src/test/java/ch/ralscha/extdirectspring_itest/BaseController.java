@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,12 +37,12 @@ public abstract class BaseController<T> {
 				.buildAndWrite();
 	}
 
-	public abstract void method1(HttpServletRequest request,
-			HttpServletResponse response, @Valid T model, BindingResult result);
+	public abstract void method1(HttpServletRequest request, HttpServletResponse response,
+			@Valid T model, BindingResult result);
 
 	@ExtDirectMethod(value = ExtDirectMethodType.FORM_POST, group = "itest_base")
 	@RequestMapping(value = "/method2", method = RequestMethod.POST)
-	public abstract void method2(HttpServletRequest request,
-			HttpServletResponse response, @Valid T model, BindingResult result);
+	public abstract void method2(HttpServletRequest request, HttpServletResponse response,
+			@Valid T model, BindingResult result);
 
 }

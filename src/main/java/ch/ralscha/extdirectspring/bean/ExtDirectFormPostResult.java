@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -200,7 +200,7 @@ public class ExtDirectFormPostResult {
 		Assert.notNull(errors, "field must not be null");
 
 		// do not overwrite existing errors
-		Map<String, List<String>> errorMap = (Map<String, List<String>>) result
+		Map<String, List<String>> errorMap = (Map<String, List<String>>) this.result
 				.get(ERRORS_PROPERTY);
 		if (errorMap == null) {
 			errorMap = new HashMap<String, List<String>>();
@@ -218,15 +218,15 @@ public class ExtDirectFormPostResult {
 	}
 
 	public void addResultProperty(String key, Object value) {
-		result.put(key, value);
+		this.result.put(key, value);
 	}
 
 	public Map<String, Object> getResult() {
-		return result;
+		return this.result;
 	}
 
 	public void setSuccess(boolean flag) {
-		result.put(SUCCESS_PROPERTY, flag);
+		this.result.put(SUCCESS_PROPERTY, flag);
 	}
 
 }

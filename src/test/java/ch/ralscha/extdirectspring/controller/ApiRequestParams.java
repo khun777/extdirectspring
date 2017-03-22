@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ public class ApiRequestParams {
 
 	private String pollingUrlsVar;
 
-	private String sseVar;
-
 	private String group;
 
 	private Boolean fullRouterUrl;
@@ -52,107 +50,98 @@ public class ApiRequestParams {
 		private final ApiRequestParams params = new ApiRequestParams();
 
 		Builder apiNs(String value) {
-			params.apiNs = value;
+			this.params.apiNs = value;
 			return this;
 		}
 
 		Builder actionNs(String value) {
-			params.actionNs = value;
+			this.params.actionNs = value;
 			return this;
 		}
 
 		Builder remotingApiVar(String value) {
-			params.remotingApiVar = value;
+			this.params.remotingApiVar = value;
 			return this;
 		}
 
 		Builder pollingUrlsVar(String value) {
-			params.pollingUrlsVar = value;
-			return this;
-		}
-
-		Builder sseVar(String value) {
-			params.sseVar = value;
+			this.params.pollingUrlsVar = value;
 			return this;
 		}
 
 		Builder group(String value) {
-			params.group = value;
+			this.params.group = value;
 			return this;
 		}
 
 		Builder fullRouterUrl(Boolean value) {
-			params.fullRouterUrl = value;
+			this.params.fullRouterUrl = value;
 			return this;
 		}
 
 		Builder format(String value) {
-			params.format = value;
+			this.params.format = value;
 			return this;
 		}
 
 		Builder providerType(String value) {
-			params.providerType = value;
+			this.params.providerType = value;
 			return this;
 		}
 
 		Builder configuration(Configuration configuration) {
-			params.configuration = configuration;
+			this.params.configuration = configuration;
 			return this;
 		}
 
 		Builder baseRouterUrl(String value) {
-			params.baseRouterUrl = value;
+			this.params.baseRouterUrl = value;
 			return this;
 		}
 
 		public ApiRequestParams build() {
-			return params;
+			return this.params;
 		}
 	}
 
 	public String getApiNs() {
-		return apiNs;
+		return this.apiNs;
 	}
 
 	public String getActionNs() {
-		return actionNs;
+		return this.actionNs;
 	}
 
 	public String getRemotingApiVar() {
-		return remotingApiVar;
+		return this.remotingApiVar;
 	}
 
 	public String getPollingUrlsVar() {
-		return pollingUrlsVar;
-	}
-
-	public String getSseVar() {
-		return sseVar;
+		return this.pollingUrlsVar;
 	}
 
 	public String getGroup() {
-		return group;
+		return this.group;
 	}
 
 	public Boolean isFullRouterUrl() {
-		return fullRouterUrl;
+		return this.fullRouterUrl;
 	}
 
 	public String getBaseRouterUrl() {
-		return baseRouterUrl;
+		return this.baseRouterUrl;
 	}
 
 	public String getFormat() {
-		return format;
+		return this.format;
 	}
 
 	public String getProviderType() {
-		return providerType;
+		return this.providerType;
 	}
 
 	public Configuration getConfiguration() {
-		return configuration;
+		return this.configuration;
 	}
 
 }

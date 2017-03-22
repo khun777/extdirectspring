@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class BaseResponse {
 	private String where;
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class BaseResponse {
 	}
 
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class BaseResponse {
 	}
 
 	public String getWhere() {
-		return where;
+		return this.where;
 	}
 
 	/**

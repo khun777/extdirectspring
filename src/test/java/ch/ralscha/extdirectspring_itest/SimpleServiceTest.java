@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package ch.ralscha.extdirectspring_itest;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -45,15 +45,15 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.ralscha.extdirectspring.bean.api.Action;
 import ch.ralscha.extdirectspring.bean.api.PollingProvider;
 import ch.ralscha.extdirectspring.bean.api.RemotingApi;
 import ch.ralscha.extdirectspring.controller.ApiControllerTest;
 import ch.ralscha.extdirectspring.controller.ApiRequestParams;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SimpleServiceTest extends JettyTest2 {
 
@@ -66,16 +66,14 @@ public class SimpleServiceTest extends JettyTest2 {
 
 	private static RemotingApi api() {
 		RemotingApi remotingApi = new RemotingApi("remoting", "/controller/router", null);
-		remotingApi.addAction("simpleService",
-				new Action("toUpperCase", 1, Boolean.FALSE));
-		remotingApi.addAction("simpleService",
-				new Action("echo", Arrays.asList("userId", "logLevel")));
+		remotingApi.addAction("simpleService", Action.create("toUpperCase", 1));
+		remotingApi.addAction("simpleService", Action.createNamed("echo",
+				Arrays.asList("userId", "logLevel"), null, null));
 
 		PollingProvider pollingProvider = new PollingProvider("simpleService", "poll",
 				"poll");
 		remotingApi.addPollingProvider(pollingProvider);
 
-		remotingApi.addSseProvider("simpleService", "sse");
 		return remotingApi;
 	}
 
@@ -129,25 +127,25 @@ public class SimpleServiceTest extends JettyTest2 {
 		String responseString = EntityUtils.toString(entity);
 
 		String contentType = response.getFirstHeader("Content-Type").getValue();
-		ApiControllerTest.compare(responseString, contentType, api(), ApiRequestParams
-				.builder().build());
+		ApiControllerTest.compare(responseString, contentType, api(),
+				ApiRequestParams.builder().build());
 
 		assertCacheHeaders(response, fingerprinted);
 	}
 
 	public static void assertCacheHeaders(HttpResponse response, boolean fingerprinted) {
 		if (fingerprinted) {
-			assertThat(response.getFirstHeader("Content-Type").getValue()).isEqualTo(
-					"application/javascript;charset=UTF-8");
+			assertThat(response.getFirstHeader("Content-Type").getValue())
+					.isEqualTo("application/javascript;charset=UTF-8");
 			assertThat(response.getFirstHeader("Content-Length")).isNotNull();
 
 			String expiresString = response.getFirstHeader("Expires").getValue();
-			DateTimeFormatter fmt = DateTimeFormat.forPattern(
-					"E, dd MMM yyyy HH:mm:ss ZZZ").withLocale(Locale.ENGLISH);
+			DateTimeFormatter fmt = DateTimeFormat
+					.forPattern("E, dd MMM yyyy HH:mm:ss ZZZ").withLocale(Locale.ENGLISH);
 
 			DateTime expires = DateTime.parse(expiresString, fmt);
-			DateTime inSixMonths = DateTime.now(DateTimeZone.UTC).plusSeconds(
-					6 * 30 * 24 * 60 * 60);
+			DateTime inSixMonths = DateTime.now(DateTimeZone.UTC)
+					.plusSeconds(6 * 30 * 24 * 60 * 60);
 			assertThat(expires.getYear()).isEqualTo(inSixMonths.getYear());
 			assertThat(expires.getMonthOfYear()).isEqualTo(inSixMonths.getMonthOfYear());
 			assertThat(expires.getDayOfMonth()).isEqualTo(inSixMonths.getDayOfMonth());
@@ -155,13 +153,13 @@ public class SimpleServiceTest extends JettyTest2 {
 			assertThat(expires.getMinuteOfDay()).isEqualTo(inSixMonths.getMinuteOfDay());
 
 			assertThat(response.getFirstHeader("ETag").getValue()).isNotNull();
-			assertThat(response.getFirstHeader("Cache-Control").getValue()).isEqualTo(
-					"public, max-age=15552000");
+			assertThat(response.getFirstHeader("Cache-Control").getValue())
+					.isEqualTo("public, max-age=15552000");
 
 		}
 		else {
-			assertThat(response.getFirstHeader("Content-Type").getValue()).isEqualTo(
-					"application/javascript;charset=UTF-8");
+			assertThat(response.getFirstHeader("Content-Type").getValue())
+					.isEqualTo("application/javascript;charset=UTF-8");
 			assertThat(response.getFirstHeader("Content-Length")).isNotNull();
 			assertThat(response.getFirstHeader("Expires")).isNull();
 			assertThat(response.getFirstHeader("ETag")).isNull();
@@ -196,8 +194,8 @@ public class SimpleServiceTest extends JettyTest2 {
 							+ _id);
 			response = client.execute(get);
 
-			assertThat(response.getFirstHeader("Content-Type").getValue()).isEqualTo(
-					"application/json;charset=UTF-8");
+			assertThat(response.getFirstHeader("Content-Type").getValue())
+					.isEqualTo("application/json;charset=UTF-8");
 
 			String responseString = EntityUtils.toString(response.getEntity());
 			Map<String, Object> rootAsMap = mapper.readValue(responseString, Map.class);
@@ -212,39 +210,14 @@ public class SimpleServiceTest extends JettyTest2 {
 		}
 	}
 
-	@Test
-	@PerfTest(invocations = 150, threads = 5)
-	public void testSse() throws IOException {
-		String _id = String.valueOf(id.incrementAndGet());
-		CloseableHttpClient client = HttpClientBuilder.create().build();
-		CloseableHttpResponse response = null;
-		try {
-
-			HttpGet get = new HttpGet(
-					"http://localhost:9998/controller/sse/simpleService/sse?id=" + _id);
-			response = client.execute(get);
-
-			assertThat(response.getFirstHeader("Content-Type").getValue()).isEqualTo(
-					"text/event-stream;charset=UTF-8");
-
-			String responseString = EntityUtils.toString(response.getEntity());
-			String[] parts = responseString.split("\\n");
-			assertThat(parts[0]).isEqualTo("id:" + _id);
-			assertThat(parts[1]).isEqualTo("data:d" + _id);
-		}
-		finally {
-			IOUtils.closeQuietly(response);
-			IOUtils.closeQuietly(client);
-		}
-	}
-
 	private static void postToUpperCase(String text, HttpClient client)
 			throws IOException, JsonParseException, JsonMappingException {
 		HttpPost post = new HttpPost("http://localhost:9998/controller/router");
 
 		StringEntity postEntity = new StringEntity(
 				"{\"action\":\"simpleService\",\"method\":\"toUpperCase\",\"data\":[\""
-						+ text + "\"],\"type\":\"rpc\",\"tid\":1}", "UTF-8");
+						+ text + "\"],\"type\":\"rpc\",\"tid\":1}",
+				"UTF-8");
 		post.setEntity(postEntity);
 		post.setHeader("Content-Type", "application/json; charset=UTF-8");
 
@@ -253,8 +226,8 @@ public class SimpleServiceTest extends JettyTest2 {
 		HttpEntity entity = response.getEntity();
 		assertThat(entity).isNotNull();
 		String responseString = EntityUtils.toString(entity);
-		assertThat(response.getFirstHeader("Content-Length").getValue()).isEqualTo(
-				"" + responseString.length());
+		assertThat(response.getFirstHeader("Content-Length").getValue())
+				.isEqualTo("" + responseString.length());
 
 		assertThat(responseString).isNotNull();
 		assertThat(responseString).startsWith("[").endsWith("]");
@@ -279,8 +252,7 @@ public class SimpleServiceTest extends JettyTest2 {
 					Collections.singletonList("UserId: ralph LogLevel: 100"), client);
 			postToEcho(Collections.singletonList("\"userId\":\"tom\""),
 					Collections.singletonList("UserId: tom LogLevel: 10"), client);
-			postToEcho(
-					Collections.singletonList("\"userId\":\"renee\", \"logLevel\": 1"),
+			postToEcho(Collections.singletonList("\"userId\":\"renee\", \"logLevel\": 1"),
 					Collections.singletonList("UserId: renee LogLevel: 1"), client);
 			postToEcho(Collections.singletonList("\"userId\":\"andrea\""),
 					Collections.singletonList("UserId: andrea LogLevel: 10"), client);
@@ -295,11 +267,14 @@ public class SimpleServiceTest extends JettyTest2 {
 	public void testSimpleNamedCallBatched() throws IllegalStateException, IOException {
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		try {
-			postToEcho(Arrays.asList("\"userId\":\"Ralph\", \"logLevel\": 100",
-					"\"userId\":\"Tom\"", "\"userId\":\"Renee\", \"logLevel\": 1",
-					"\"userId\":\"Andrea\""), Arrays.asList(
-					"UserId: Ralph LogLevel: 100", "UserId: Tom LogLevel: 10",
-					"UserId: Renee LogLevel: 1", "UserId: Andrea LogLevel: 10"), client);
+			postToEcho(
+					Arrays.asList("\"userId\":\"Ralph\", \"logLevel\": 100",
+							"\"userId\":\"Tom\"", "\"userId\":\"Renee\", \"logLevel\": 1",
+							"\"userId\":\"Andrea\""),
+					Arrays.asList("UserId: Ralph LogLevel: 100",
+							"UserId: Tom LogLevel: 10", "UserId: Renee LogLevel: 1",
+							"UserId: Andrea LogLevel: 10"),
+					client);
 		}
 		finally {
 			IOUtils.closeQuietly(client);
@@ -307,8 +282,8 @@ public class SimpleServiceTest extends JettyTest2 {
 	}
 
 	private static void postToEcho(List<String> datas, List<String> expectedResult,
-			HttpClient client) throws IOException, JsonParseException,
-			JsonMappingException {
+			HttpClient client)
+			throws IOException, JsonParseException, JsonMappingException {
 
 		HttpPost post = new HttpPost("http://localhost:9998/controller/router");
 
@@ -319,7 +294,8 @@ public class SimpleServiceTest extends JettyTest2 {
 		}
 
 		for (int i = 0; i < datas.size(); i++) {
-			postData.append("{\"action\":\"simpleService\",\"method\":\"echo\",\"data\":{");
+			postData.append(
+					"{\"action\":\"simpleService\",\"method\":\"echo\",\"data\":{");
 			postData.append(datas.get(i));
 			postData.append("},\"type\":\"rpc\",\"tid\":");
 			postData.append(i + 1);

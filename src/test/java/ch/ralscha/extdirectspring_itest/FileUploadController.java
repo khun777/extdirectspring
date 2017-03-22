@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,8 @@ public class FileUploadController {
 			final HttpServletResponse response, @Valid User user, BindingResult result)
 			throws IOException {
 
-		ExtDirectResponseBuilder builder = new ExtDirectResponseBuilder(request, response);
+		ExtDirectResponseBuilder builder = new ExtDirectResponseBuilder(request,
+				response);
 
 		if (file != null && !file.isEmpty()) {
 			builder.addResultProperty("fileContents", new String(file.getBytes()));

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,29 +45,29 @@ public class ExtDirectResponse extends BaseResponse {
 	}
 
 	public ExtDirectResponse(ExtDirectRequest directRequest) {
-		action = directRequest.getAction();
-		method = directRequest.getMethod();
-		tid = directRequest.getTid();
+		this.action = directRequest.getAction();
+		this.method = directRequest.getMethod();
+		this.tid = directRequest.getTid();
 		setType(directRequest.getType());
 	}
 
 	public ExtDirectResponse(HttpServletRequest request) {
-		action = request.getParameter("extAction");
-		method = request.getParameter("extMethod");
-		tid = Integer.parseInt(request.getParameter("extTID"));
+		this.action = request.getParameter("extAction");
+		this.method = request.getParameter("extMethod");
+		this.tid = Integer.parseInt(request.getParameter("extTID"));
 		setType(request.getParameter("extType"));
 	}
 
 	public String getAction() {
-		return action;
+		return this.action;
 	}
 
 	public String getMethod() {
-		return method;
+		return this.method;
 	}
 
 	public Object getResult() {
-		return result;
+		return this.result;
 	}
 
 	public void setResult(Object result) {
@@ -75,12 +75,12 @@ public class ExtDirectResponse extends BaseResponse {
 	}
 
 	public int getTid() {
-		return tid;
+		return this.tid;
 	}
 
 	@JsonIgnore
 	public boolean isStreamResponse() {
-		return streamResponse;
+		return this.streamResponse;
 	}
 
 	public void setStreamResponse(boolean streamResponse) {
@@ -88,7 +88,7 @@ public class ExtDirectResponse extends BaseResponse {
 	}
 
 	public Class<?> getJsonView() {
-		return jsonView;
+		return this.jsonView;
 	}
 
 	public void setJsonView(Class<?> jsonView) {
@@ -97,9 +97,10 @@ public class ExtDirectResponse extends BaseResponse {
 
 	@Override
 	public String toString() {
-		return "ExtDirectResponse [tid=" + tid + ", action=" + action + ", method="
-				+ method + ", result=" + result + ", streamResponse=" + streamResponse
-				+ ", jsonView=" + jsonView + "]";
+		return "ExtDirectResponse [tid=" + this.tid + ", action=" + this.action
+				+ ", method=" + this.method + ", result=" + this.result
+				+ ", streamResponse=" + this.streamResponse + ", jsonView="
+				+ this.jsonView + "]";
 	}
 
 }

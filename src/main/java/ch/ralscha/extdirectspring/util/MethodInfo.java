@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2014 Ralph Schaer <ralphschaer@gmail.com>
+ * Copyright 2010-2016 Ralph Schaer <ralphschaer@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package ch.ralscha.extdirectspring.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -66,13 +68,11 @@ public final class MethodInfo {
 
 	private PollingProvider pollingProvider;
 
-	private String sseMethod;
-
 	public MethodInfo(Class<?> clazz, ApplicationContext context, String beanName,
 			Method method) {
 
-		ExtDirectMethod extDirectMethodAnnotation = AnnotationUtils.findAnnotation(
-				method, ExtDirectMethod.class);
+		ExtDirectMethod extDirectMethodAnnotation = AnnotationUtils.findAnnotation(method,
+				ExtDirectMethod.class);
 
 		this.type = extDirectMethodAnnotation.value();
 
@@ -93,15 +93,15 @@ public final class MethodInfo {
 		this.synchronizeOnSession = extDirectMethodAnnotation.synchronizeOnSession();
 		this.streamResponse = extDirectMethodAnnotation.streamResponse();
 
-		if (type != ExtDirectMethodType.FORM_POST) {
+		if (this.type != ExtDirectMethodType.FORM_POST) {
 			this.method = method;
 			this.parameters = buildParameterList(clazz, method);
 
-			this.collectionType = extDirectMethodAnnotation.entryClass() == Object.class ? null
-					: extDirectMethodAnnotation.entryClass();
+			this.collectionType = extDirectMethodAnnotation.entryClass() == Object.class
+					? null : extDirectMethodAnnotation.entryClass();
 
 			if (this.collectionType == null) {
-				for (ParameterInfo parameter : parameters) {
+				for (ParameterInfo parameter : this.parameters) {
 					Class<?> collType = parameter.getCollectionType();
 					if (collType != null) {
 						this.collectionType = collType;
@@ -146,7 +146,7 @@ public final class MethodInfo {
 			}
 		}
 
-		switch (type) {
+		switch (this.type) {
 		case SIMPLE:
 			int paramLength = 0;
 			for (ParameterInfo parameter : this.parameters) {
@@ -154,43 +154,67 @@ public final class MethodInfo {
 					paramLength++;
 				}
 			}
-			this.action = new Action(method.getName(), paramLength, null);
+			this.action = Action.create(method.getName(), paramLength,
+					extDirectMethodAnnotation.batched());
 			break;
 		case SIMPLE_NAMED:
+			int noOfClientParameters = 0;
+			Class<?> parameterType = null;
+
 			List<String> parameterNames = new ArrayList<String>();
 			for (ParameterInfo parameter : this.parameters) {
 				if (parameter.isClientParameter()) {
+					noOfClientParameters++;
+					parameterType = parameter.getType();
 					parameterNames.add(parameter.getName());
 				}
 			}
-			this.action = new Action(method.getName(), parameterNames);
+
+			if (noOfClientParameters == 1 && Map.class.isAssignableFrom(parameterType)) {
+				this.action = Action.createNamed(method.getName(),
+						Collections.<String>emptyList(), Boolean.FALSE,
+						extDirectMethodAnnotation.batched());
+			}
+			else {
+				this.action = Action.createNamed(method.getName(),
+						Collections.unmodifiableList(parameterNames), null,
+						extDirectMethodAnnotation.batched());
+			}
 			break;
 		case FORM_LOAD:
+			this.action = Action.create(method.getName(), 1,
+					extDirectMethodAnnotation.batched());
+			break;
 		case STORE_READ:
 		case STORE_MODIFY:
 		case TREE_LOAD:
-			this.action = new Action(method.getName(), 1, null);
+			List<String> metadataParams = new ArrayList<String>();
+			for (ParameterInfo parameter : this.parameters) {
+				if (parameter.hasMetadataParamAnnotation()) {
+					metadataParams.add(parameter.getName());
+				}
+			}
+			this.action = Action.createTreeLoad(method.getName(), 1, metadataParams,
+					extDirectMethodAnnotation.batched());
 			break;
 		case FORM_POST:
-			this.action = new Action(method.getName(), 0, Boolean.TRUE);
+			this.action = Action.createFormHandler(method.getName(), 0);
 			break;
 		case FORM_POST_JSON:
-			this.action = new Action(method.getName(), 1, null);
+			this.action = Action.create(method.getName(), 1,
+					extDirectMethodAnnotation.batched());
 			break;
 		case POLL:
 			this.pollingProvider = new PollingProvider(beanName, method.getName(),
 					extDirectMethodAnnotation.event());
 			break;
-		case SSE:
-			this.sseMethod = method.getName();
-			break;
 		default:
-			throw new IllegalStateException("ExtDirectMethodType: " + type
-					+ " does not exists");
+			throw new IllegalStateException(
+					"ExtDirectMethodType: " + this.type + " does not exists");
 		}
 
-		this.action = extractDocumentationAnnotations(extDirectMethodAnnotation
-				.documentation());
+		this.action = extractDocumentationAnnotations(
+				extDirectMethodAnnotation.documentation());
 
 	}
 
@@ -210,39 +234,34 @@ public final class MethodInfo {
 			ExtDirectDocParameters docParameters = documentation.parameters();
 			if (null != docParameters) {
 				String[] params = docParameters.params();
-				String[] descriptions = docParameters.descriptions() == null ? new String[params.length]
-						: docParameters.descriptions();
+				String[] descriptions = docParameters.descriptions() == null
+						? new String[params.length] : docParameters.descriptions();
 				if (params.length == descriptions.length) {
 					for (int i = 0; i < params.length; i++) {
-						actionDoc.getParameters().put(
-								params[i],
-								descriptions[i] == null ? "No description"
-										: descriptions[i]);
+						actionDoc.getParameters().put(params[i], descriptions[i] == null
+								? "No description" : descriptions[i]);
 					}
 				}
 				else {
-					LogFactory
-							.getLog(MethodInfo.class)
-							.info("Documentation: skip generation of parameters, params size is different from descriptions size");
+					LogFactory.getLog(MethodInfo.class).info(
+							"Documentation: skip generation of parameters, params size is different from descriptions size");
 				}
 			}
 			ExtDirectDocReturn docReturn = documentation.returnMethod();
 			if (null != docReturn) {
 				String[] properties = docReturn.properties();
-				String[] descriptions = docReturn.descriptions() == null ? new String[properties.length]
-						: docReturn.descriptions();
+				String[] descriptions = docReturn.descriptions() == null
+						? new String[properties.length] : docReturn.descriptions();
 				if (properties.length == descriptions.length) {
 					for (int i = 0; i < properties.length; i++) {
-						actionDoc.getReturnMethod().put(
-								properties[i],
+						actionDoc.getReturnMethod().put(properties[i],
 								descriptions[i] == null ? "No description"
 										: descriptions[i]);
 					}
 				}
 				else {
-					LogFactory
-							.getLog(MethodInfo.class)
-							.info("Documentation: skip generation of return method properties, properties size is different from descriptions size");
+					LogFactory.getLog(MethodInfo.class).info(
+							"Documentation: skip generation of return method properties, properties size is different from descriptions size");
 				}
 			}
 			return actionDoc;
@@ -275,23 +294,23 @@ public final class MethodInfo {
 	}
 
 	public Method getMethod() {
-		return method;
+		return this.method;
 	}
 
 	public String getForwardPath() {
-		return forwardPath;
+		return this.forwardPath;
 	}
 
 	public HandlerMethod getHandlerMethod() {
-		return handlerMethod;
+		return this.handlerMethod;
 	}
 
 	public List<ParameterInfo> getParameters() {
-		return parameters;
+		return this.parameters;
 	}
 
 	public Class<?> getCollectionType() {
-		return collectionType;
+		return this.collectionType;
 	}
 
 	public boolean isType(ExtDirectMethodType methodType) {
@@ -299,31 +318,27 @@ public final class MethodInfo {
 	}
 
 	public Class<?> getJsonView() {
-		return jsonView;
+		return this.jsonView;
 	}
 
 	public boolean isSynchronizeOnSession() {
-		return synchronizeOnSession;
+		return this.synchronizeOnSession;
 	}
 
 	public boolean isStreamResponse() {
-		return streamResponse;
+		return this.streamResponse;
 	}
 
 	public PollingProvider getPollingProvider() {
-		return pollingProvider;
-	}
-
-	public String getSseMethod() {
-		return sseMethod;
+		return this.pollingProvider;
 	}
 
 	public Action getAction() {
-		return action;
+		return this.action;
 	}
 
 	public String getGroup() {
-		return group;
+		return this.group;
 	}
 
 	/**
